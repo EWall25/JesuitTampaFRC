@@ -28,3 +28,10 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
 
         self.drive.arcadeDrive(forward, rotation, False)
+
+    def stop(self) -> None:
+        """
+        Stops the robot's motors.
+        """
+
+        self.drive.stopMotor()
