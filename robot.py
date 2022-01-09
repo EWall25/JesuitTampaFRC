@@ -12,3 +12,7 @@ class StealthTigersRobot(commands2.TimedCommandRobot):
 
     def robotInit(self) -> None:
         self.container = RobotContainer()
+
+
+if __name__ == "__main__":
+    wpilib.run(StealthTigersRobot)

@@ -1,6 +1,7 @@
 import wpilib
 from wpilib.interfaces import GenericHID
 
+import util
 from constants import *
 
 from commands.default_drive import DefaultDrive
@@ -12,16 +13,16 @@ class RobotContainer:
 
     def __init__(self) -> None:
         # Driver controller
-        self.stick = wpilib.Joystick(DRIVER_CONTROLLER_PORT)
+        self.stick = wpilib.XboxController(DRIVER_CONTROLLER_PORT)
 
         # Subsystems
         self.drive = DriveSubsystem()
 
-        # Setup defualt drive mode
+        # Setup default drive mode
         self.drive.setDefaultCommand(
             DefaultDrive(
-                lambda: -self.stick.getY(GenericHID.Hand.kLeftHand),
-                lambda: self.stick.getX(GenericHID.Hand.kRightHand),
+                lambda: util.deadband(-self.stick.getY(GenericHID.Hand.kLeftHand), 0.03),
+                lambda: util.deadband(self.stick.getX(GenericHID.Hand.kRightHand), 0.03),
                 self.drive
             )
         )
