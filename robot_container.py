@@ -26,7 +26,16 @@ class RobotContainer:
         # Autonomous routines
 
         # Auto routine which drives forwards for 5 seconds, then stops
-        self.auto = TimedDrive(5, 0.7, self.drive, self.timer)
+        self.timedAuto = TimedDrive(5, 0.7, self.drive, self.timer)
+
+        # Auto routine chooser
+        self.chooser = wpilib.SendableChooser()
+
+        # Add commands to the auto command chooser
+        self.chooser.setDefaultOption("Timed Auto", self.timedAuto)
+
+        # Put the chooser on the dashboard
+        wpilib.SmartDashboard.putData("Autonomous", self.chooser)
 
         # Setup default drive mode
         self.drive.setDefaultCommand(
@@ -38,4 +47,4 @@ class RobotContainer:
         )
 
     def get_autonomous_command(self) -> commands2.Command:
-        return self.auto
+        return self.chooser.getSelected()
