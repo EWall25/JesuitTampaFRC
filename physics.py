@@ -25,9 +25,14 @@ class PhysicsEngine:
             wheel_diameter=6 * units.inch
         )
 
+        self.navx = wpilib.simulation.SimDeviceSim("navX-Sensor[4]")
+        self.navx_yaw = self.navx.getDouble("Yaw")
+
     def update_sim(self, now, tm_diff):
         l_motor = self.l_motor.getSpeed()
         r_motor = self.r_motor.getSpeed()
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
-        self.physics_controller.move_robot(transform)
+        pose = self.physics_controller.move_robot(transform)
+
+        self.navx_yaw.set(-pose.rotation().degrees())

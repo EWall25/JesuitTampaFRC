@@ -1,6 +1,7 @@
 import commands2
 import wpilib
 import wpilib.drive
+from navx import AHRS
 
 from constants import *
 
@@ -19,6 +20,9 @@ class DriveSubsystem(commands2.SubsystemBase):
             wpilib.SpeedControllerGroup(self.fr_motor, self.br_motor)
         )
 
+        # NavX IMU on the MXP bus
+        self.imu = AHRS.create_spi()
+
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """
         Drives the robot using arcade controls.
@@ -35,3 +39,18 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
 
         self.drive.stopMotor()
+
+    def reset_heading(self) -> None:
+        """
+        Zeroes the gyroscope's heading.
+        """
+
+        self.imu.reset()
+
+    def get_heading(self) -> float:
+        """
+        Gets the robot's heading direction.
+        :return: The robot's heading direction in degrees from -180 to 180
+        """
+
+        return self.imu.getYaw()
