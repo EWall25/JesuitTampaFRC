@@ -11,6 +11,13 @@ class DefaultDrive(commands2.CommandBase):
             rotation: typing.Callable[[], float],
             drive: DriveSubsystem
     ) -> None:
+        """
+        Arcade drive mode.
+        :param forward: A function returning the intended forward speed. Ranges -1 to 1.
+        :param rotation: A function returning the intended rotation speed. Ranges -1 to 1.
+        :param drive: The drive subsystem.
+        """
+
         super().__init__()
 
         self.drive = drive
