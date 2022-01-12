@@ -7,9 +7,9 @@ from subsystems.drive_subsystem import DriveSubsystem
 class DefaultDrive(commands2.CommandBase):
 
     def __init__(
-            self, forward: typing.Callable[[], float],
+            self, drive: DriveSubsystem,
+            forward: typing.Callable[[], float],
             rotation: typing.Callable[[], float],
-            drive: DriveSubsystem
     ) -> None:
         """
         Arcade drive mode.
