@@ -28,7 +28,7 @@ class RobotContainer:
         # Autonomous routines
 
         # Auto routine which drives forwards for 5 seconds, then stops
-        self.timedAuto = TimedDrive(5, 0.7, self.drive, self.timer)
+        self.timedAuto = TimedDrive(self.drive, self.timer, 5, 0.7)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
@@ -45,9 +45,15 @@ class RobotContainer:
         # Setup default drive mode
         self.drive.setDefaultCommand(
             DefaultDrive(
-                lambda: util.deadband(-self.stick.getY(GenericHID.Hand.kLeftHand), 0.03),
-                lambda: util.deadband(self.stick.getX(GenericHID.Hand.kRightHand), 0.03),
-                self.drive
+                self.drive,
+                # Apply a deadzone to the input to prevent controller drift
+                # If the right bumper is pressed, increase the movement speed
+                lambda: util.deadband(-self.stick.getY(GenericHID.Hand.kLeftHand), 0.03)
+                        * (BOOST_DRIVE_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
+                        else DEFAULT_DRIVE_SPEED),
+                lambda: util.deadband(self.stick.getX(GenericHID.Hand.kRightHand), 0.03)
+                        * (BOOST_TURN_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
+                        else DEFAULT_TURN_SPEED),
             )
         )
 

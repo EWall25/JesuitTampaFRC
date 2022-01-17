@@ -6,13 +6,13 @@ from subsystems.drive_subsystem import DriveSubsystem
 
 class TimedDrive(commands2.CommandBase):
 
-    def __init__(self, seconds: float, speed: float, drive: DriveSubsystem, timer: wpilib.Timer) -> None:
+    def __init__(self, drive: DriveSubsystem, timer: wpilib.Timer, seconds: float, speed: float) -> None:
         super().__init__()
 
         self.drive = drive
+        self.timer = timer
         self.time = seconds
         self.speed = speed
-        self.timer = timer
 
         self.addRequirements([drive])
 
