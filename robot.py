@@ -1,4 +1,5 @@
 import typing
+from functools import cached_property
 
 import wpilib
 import commands2

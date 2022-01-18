@@ -1,3 +1,4 @@
+import ctre
 import wpilib.simulation
 from pyfrc.physics import tankmodel, motor_cfgs
 from pyfrc.physics.core import PhysicsInterface
@@ -25,8 +26,7 @@ class PhysicsEngine:
             wheel_diameter=6 * units.inch
         )
 
-        self.navx = wpilib.simulation.SimDeviceSim("navX-Sensor[4]")
-        self.navx_yaw = self.navx.getDouble("Yaw")
+        self.gyro = wpilib.simulation.AnalogGyroSim(0)
 
     def update_sim(self, now, tm_diff):
         l_motor = self.l_motor.getSpeed()
@@ -35,4 +35,4 @@ class PhysicsEngine:
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
         pose = self.physics_controller.move_robot(transform)
 
-        self.navx_yaw.set(-pose.rotation().degrees())
+        self.gyro.setAngle(-pose.rotation().degrees())
