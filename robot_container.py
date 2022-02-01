@@ -2,6 +2,7 @@ import commands2
 import commands2.button
 import wpilib
 from wpilib.interfaces import GenericHID
+from commands.drive_distance import DriveDistance
 
 import util
 from constants import *
@@ -30,11 +31,19 @@ class RobotContainer:
         # Auto routine which drives forwards for 5 seconds, then stops
         self.timedAuto = TimedDrive(self.drive, self.timer, 5, 0.7)
 
+        # Auto routine which drives forwards 5 feet, then stops
+        self.distanceAuto = DriveDistance(self.drive, 5 * 12)
+
+        # Auto routine which turns to 90 degrees
+        self.angleAuto = TurnToAngle(self.drive, 90)
+
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
         self.chooser.setDefaultOption("Timed Auto", self.timedAuto)
+        self.chooser.addOption("Distance Auto", self.distanceAuto)
+        self.chooser.addOption("Angle Auto", self.angleAuto)
         self.chooser.addOption("Nothing", commands2.InstantCommand())
 
         # Put the chooser on the dashboard
@@ -48,10 +57,10 @@ class RobotContainer:
                 self.drive,
                 # Apply a deadzone to the input to prevent controller drift
                 # If the right bumper is pressed, increase the movement speed
-                lambda: util.deadband(-self.stick.getY(GenericHID.Hand.kLeftHand), 0.03)
+                lambda: -self.stick.getY(GenericHID.Hand.kLeftHand), 0.03
                         * (BOOST_DRIVE_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
                         else DEFAULT_DRIVE_SPEED),
-                lambda: util.deadband(self.stick.getX(GenericHID.Hand.kRightHand), 0.03)
+                lambda: self.stick.getX(GenericHID.Hand.kRightHand), 0.03
                         * (BOOST_TURN_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
                         else DEFAULT_TURN_SPEED),
             )

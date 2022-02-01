@@ -11,8 +11,6 @@ class DriveSubsystem(commands2.SubsystemBase):
     def __init__(self) -> None:
         super().__init__()
 
-        self.real = wpilib.RobotBase.isReal()
-
         self.fl_motor = wpilib.Spark(FRONT_LEFT_MOTOR_PORT)
         self.bl_motor = wpilib.Spark(BACK_LEFT_MOTOR_PORT)
         self.fr_motor = wpilib.Spark(FRONT_RIGHT_MOTOR_PORT)
@@ -29,12 +27,8 @@ class DriveSubsystem(commands2.SubsystemBase):
             wpilib.SpeedControllerGroup(self.fr_motor, self.br_motor)
         )
 
-        if self.real:
-            # Inertia Measurement Unit on CAN port 0
-            self.imu = PigeonIMU(0)
-        else:
-            # CTRE doesn't give us simulation support, so we need to make a fake gyro for simulations
-            self.sim_imu = wpilib.AnalogGyro(0)
+        # Inertia Measurement Unit on CAN port 0
+        self.imu = PigeonIMU(0)
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """
@@ -58,10 +52,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         Zeroes the gyroscope's heading.
         """
 
-        if self.real:
-            self.imu.setYaw(0)
-        else:
-            self.sim_imu.reset()
+        self.imu.setYaw(0)
 
     def get_heading(self) -> float:
         """
@@ -69,12 +60,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The robot's heading direction in degrees from -180 to 180
         """
 
-        if self.real:
-            heading = self.imu.getYawPitchRoll()[0]
-        else:
-            heading = self.sim_imu.getAngle()
-
-        return heading
+        return self.imu.getYawPitchRoll()[0]
 
     def get_average_distance(self) -> float:
         """
@@ -82,11 +68,13 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The average travelled distance by both drive encoders.
         """
 
-        pass
+        # Add together the left encoder and right encoder's position then average them by dividing by 2
+        return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
 
     def reset_encoders(self) -> None:
         """
         Resets the encoders' values to 0
         """
 
-        pass
+        self.l_encoder.setPosition(0)
+        self.r_encoder.setPosition(0)

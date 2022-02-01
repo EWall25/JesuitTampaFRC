@@ -8,7 +8,7 @@ from subsystems.drive_subsystem import DriveSubsystem
 
 
 class TurnToAngle(commands2.PIDCommand):
-    def __init__(self, target_angle_degrees: float, drive: DriveSubsystem) -> None:
+    def __init__(self, drive: DriveSubsystem, target_angle_degrees: float) -> None:
         super().__init__(
             wpilib.controller.PIDController(TURN_P, TURN_I, TURN_D),
             drive.get_heading,
