@@ -1,3 +1,4 @@
+import ctre
 import wpilib.simulation
 from pyfrc.physics import tankmodel, motor_cfgs
 from pyfrc.physics.core import PhysicsInterface
@@ -25,9 +26,13 @@ class PhysicsEngine:
             wheel_diameter=6 * units.inch
         )
 
+        self.gyro = wpilib.simulation.AnalogGyroSim(0)
+
     def update_sim(self, now, tm_diff):
         l_motor = self.l_motor.getSpeed()
         r_motor = self.r_motor.getSpeed()
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
-        self.physics_controller.move_robot(transform)
+        pose = self.physics_controller.move_robot(transform)
+
+        self.gyro.setAngle(-pose.rotation().degrees())
