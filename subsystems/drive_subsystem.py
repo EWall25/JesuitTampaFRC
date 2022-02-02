@@ -1,8 +1,7 @@
 import commands2
-import ctre
 import wpilib
 import wpilib.drive
-from ctre import PigeonIMU
+from ctre import PigeonIMU, CANCoder
 
 from constants import *
 
@@ -11,21 +10,30 @@ class DriveSubsystem(commands2.SubsystemBase):
     def __init__(self) -> None:
         super().__init__()
 
+        # Front-left drive motor
         self.fl_motor = wpilib.Spark(FRONT_LEFT_MOTOR_PORT)
+        # Back-left drive motor
         self.bl_motor = wpilib.Spark(BACK_LEFT_MOTOR_PORT)
+        # Front-right drive motor
         self.fr_motor = wpilib.Spark(FRONT_RIGHT_MOTOR_PORT)
+        # Back-right drive motor
         self.br_motor = wpilib.Spark(BACK_RIGHT_MOTOR_PORT)
 
+        # Both drive motors on the left side of the robot
+        self.l_motors = wpilib.MotorControllerGroup(self.fl_motor, self.bl_motor)
+        self.l_motors.setInverted(False)
+
+        # Both drive motors on the right side of the robot
+        self.r_motors = wpilib.MotorControllerGroup(self.fr_motor, self.br_motor)
+        self.r_motors.setInverted(True)
+
+        self.drive = wpilib.drive.DifferentialDrive(self.l_motors, self.r_motors)
+
         # Encoder on CAN port 2
-        self.l_encoder = ctre.CANCoder(1)
+        self.l_encoder = CANCoder(1)
 
         # Encoder on CAN port 1
-        self.r_encoder = ctre.CANCoder(2)
-
-        self.drive = wpilib.drive.DifferentialDrive(
-            wpilib.SpeedControllerGroup(self.fl_motor, self.bl_motor),
-            wpilib.SpeedControllerGroup(self.fr_motor, self.br_motor)
-        )
+        self.r_encoder = CANCoder(2)
 
         # Inertia Measurement Unit on CAN port 0
         self.imu = PigeonIMU(0)
@@ -60,7 +68,10 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The robot's heading direction in degrees from -180 to 180
         """
 
-        return self.imu.getYawPitchRoll()[0]
+        # getYawPitchRoll returns an error code and an array containing the yaw, pitch and roll
+        # Get that array then return the yaw
+        ypr = self.imu.getYawPitchRoll()[1]
+        return ypr[0]
 
     def get_average_distance(self) -> float:
         """

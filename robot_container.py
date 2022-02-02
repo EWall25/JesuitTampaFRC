@@ -1,16 +1,12 @@
 import commands2
 import commands2.button
 import wpilib
-from wpilib.interfaces import GenericHID
-from commands.drive_distance import DriveDistance
-
-import util
-from constants import *
 
 from commands.default_drive import DefaultDrive
+from commands.drive_distance import DriveDistance
 from commands.timed_drive import TimedDrive
 from commands.turn_to_angle import TurnToAngle
-
+from constants import *
 from subsystems.drive_subsystem import DriveSubsystem
 
 
@@ -18,7 +14,7 @@ class RobotContainer:
 
     def __init__(self) -> None:
         # Driver controller
-        self.stick = wpilib.XboxController(DRIVER_CONTROLLER_PORT)
+        self.stick = wpilib.PS4Controller(DRIVER_CONTROLLER_PORT)
 
         # Timer
         self.timer = wpilib.Timer()
@@ -55,30 +51,29 @@ class RobotContainer:
         self.drive.setDefaultCommand(
             DefaultDrive(
                 self.drive,
-                # Apply a deadzone to the input to prevent controller drift
-                # If the right bumper is pressed, increase the movement speed
-                lambda: -self.stick.getY(GenericHID.Hand.kLeftHand), 0.03
-                        * (BOOST_DRIVE_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
-                        else DEFAULT_DRIVE_SPEED),
-                lambda: self.stick.getX(GenericHID.Hand.kRightHand), 0.03
-                        * (BOOST_TURN_SPEED if self.stick.getBumper(GenericHID.Hand.kRightHand)
-                        else DEFAULT_TURN_SPEED),
+                # Set the forward speed to the left stick's Y axis. If the right bumper is pressed, speed up
+                lambda: -self.stick.getLeftY() * (BOOST_DRIVE_SPEED if self.stick.getR1Button() else DEFAULT_DRIVE_SPEED),
+                # Set the rotation speed to the right stick's X axis. If the right bumper is pressed, speed up
+                lambda: self.stick.getRightX() * (BOOST_TURN_SPEED if self.stick.getR1Button() else DEFAULT_TURN_SPEED)
             )
         )
 
     def configure_button_bindings(self) -> None:
         # Turn to 0 degrees when a button is pushed
         commands2.button.JoystickButton(self.stick, TURN_TO_ZERO_BUTTON).whenPressed(
-            TurnToAngle(0.0, self.drive).withTimeout(5)  # Timeout the command it it hasn't completed after 5 seconds
+            TurnToAngle(self.drive, 0.0).withTimeout(5)  # Timeout the command if it hasn't completed after 5 seconds
         )
+        # Turn to 90 degrees when a button is pushed
         commands2.button.JoystickButton(self.stick, TURN_TO_NINETY_BUTTON).whenPressed(
-            TurnToAngle(90.0, self.drive).withTimeout(5)
+            TurnToAngle(self.drive, 90.0).withTimeout(5)
         )
+        # Turn to 180 degrees when a button is pushed
         commands2.button.JoystickButton(self.stick, TURN_TO_ONE_EIGHTY_BUTTON).whenPressed(
-            TurnToAngle(179.9, self.drive).withTimeout(5)
+            TurnToAngle(self.drive, 179.0).withTimeout(5)
         )
+        # Turn to -90 degrees (90 degrees left) when a button is pushed
         commands2.button.JoystickButton(self.stick, TURN_TO_NEGATIVE_NINETY_BUTTON).whenPressed(
-            TurnToAngle(-90.0, self.drive).withTimeout(5)
+            TurnToAngle(self.drive, -90.0).withTimeout(5)
         )
 
     def get_autonomous_command(self) -> commands2.Command:
