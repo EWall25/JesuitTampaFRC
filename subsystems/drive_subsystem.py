@@ -1,7 +1,9 @@
+import math
+
 import commands2
 import wpilib
 import wpilib.drive
-from ctre import PigeonIMU, CANCoder
+from ctre import PigeonIMU, CANCoder, SensorTimeBase
 
 from constants import *
 
@@ -29,14 +31,19 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         self.drive = wpilib.drive.DifferentialDrive(self.l_motors, self.r_motors)
 
-        # Encoder on CAN port 2
-        self.l_encoder = CANCoder(1)
+        # Left side encoder
+        self.l_encoder = CANCoder(2)
 
-        # Encoder on CAN port 1
-        self.r_encoder = CANCoder(2)
+        # Right side encoder
+        self.r_encoder = CANCoder(3)
 
-        # Inertia Measurement Unit on CAN port 0
-        self.imu = PigeonIMU(0)
+        # Configure the encoders to return a value in inches
+        # Uses the wheel diameter and number of "counts" per motor rotation to calculate distance
+        self.l_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
+        self.r_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
+
+        # Inertia Measurement Unit/Gyroscope
+        self.imu = PigeonIMU(1)
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """
