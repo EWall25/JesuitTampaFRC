@@ -32,18 +32,34 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.drive = wpilib.drive.DifferentialDrive(self.l_motors, self.r_motors)
 
         # Left side encoder
-        self.l_encoder = CANCoder(2)
+        # self.l_encoder = CANCoder(2)
+        self.l_encoder = wpilib.Encoder(0, 1)
+        self.l_encoder.setReverseDirection(False)
 
         # Right side encoder
-        self.r_encoder = CANCoder(3)
+        #self.r_encoder = CANCoder(3)
+        self.r_encoder = wpilib.Encoder(2, 3)
+        self.r_encoder.setReverseDirection(True)
+
 
         # Configure the encoders to return a value in inches
         # Uses the wheel diameter and number of "counts" per motor rotation to calculate distance
-        self.l_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
-        self.r_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
+        #self.l_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
+        #self.r_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
+        self.l_encoder.setDistancePerPulse(6 * math.pi / 360)
+        self.r_encoder.setDistancePerPulse(6 * math.pi / 360)
+
+        # Put encoders to Smart Dashboard
+        wpilib.SmartDashboard.putData("Left Encoder", self.l_encoder)
+        wpilib.SmartDashboard.putData("Right Encoder", self.r_encoder)
 
         # Inertia Measurement Unit/Gyroscope
         self.imu = PigeonIMU(1)
+
+    def periodic(self) -> None:
+        # Update the robot's heading direction on the Smart Dashboard
+        wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
+        print(self.l_encoder.get())
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """
@@ -87,12 +103,15 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
 
         # Add together the left encoder and right encoder's position then average them by dividing by 2
-        return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
+        # return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
+        return (self.l_encoder.getDistance() + self.r_encoder.getDistance()) / 2
 
     def reset_encoders(self) -> None:
         """
         Resets the encoders' values to 0
         """
 
-        self.l_encoder.setPosition(0)
-        self.r_encoder.setPosition(0)
+        # self.l_encoder.setPosition(0)
+        # self.r_encoder.setPosition(0)
+        self.l_encoder.reset()
+        self.r_encoder.reset()
