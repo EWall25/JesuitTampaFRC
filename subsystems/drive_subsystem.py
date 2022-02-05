@@ -73,6 +73,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.odometry = wpimath.kinematics.DifferentialDriveOdometry(
             Rotation2d.fromDegrees(-self.get_heading()), Pose2d(0, 0, Rotation2d()))
 
+        # Create kinematics. Kinematics allow us to learn the wheel speeds from the robot's speed.
+        self.kinematics = wpimath.kinematics.DifferentialDriveKinematics(2)
+
     def periodic(self) -> None:
         # Get the gyro angle. We have to negate it because WPILib classes expect
         # a negative value as the robot turns clockwise. Our gyro returns a positive
@@ -99,6 +102,21 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
 
         self.drive.arcadeDrive(forward, rotation, False)
+
+    def tank_drive_volts(self, left: float, right: float) -> None:
+        """
+        Drives the robot by setting the motor voltages.
+
+        :param left: The voltage to apply to the left motor
+        :param right: The voltage to apply to the right motor
+        """
+
+        # Apply voltages to motors
+        self.l_motors.setVoltage(left)
+        self.r_motors.setVoltage(right)
+
+        # Tell the system that we're driving
+        self.drive.feed()
 
     def stop(self) -> None:
         """
@@ -150,6 +168,13 @@ class DriveSubsystem(commands2.SubsystemBase):
         # Add together the left encoder and right encoder's position then average them by dividing by 2
         # return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
         return (self.get_left_wheel_distance() + self.get_right_wheel_distance()) / 2
+
+    def get_wheel_speeds(self) -> wpimath.kinematics.DifferentialDriveWheelSpeeds:
+        """
+        Gets both wheels' speeds.
+        :return: The wheels' speeds as a DifferentialDriveWheelSpeeds object
+        """
+        return wpimath.kinematics.DifferentialDriveWheelSpeeds(self.l_encoder.getRate(), self.r_encoder.getRate())
 
     def reset_encoders(self) -> None:
         """
