@@ -3,7 +3,7 @@ from pyfrc.physics import tankmodel, motor_cfgs
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics.units import units
 
-from constants import *
+from constants import DriveConstants
 
 
 class PhysicsEngine:
@@ -12,8 +12,8 @@ class PhysicsEngine:
         self.physics_controller = physics_controller
 
         # Motors
-        self.l_motor = wpilib.simulation.PWMSim(FRONT_LEFT_MOTOR_PORT)
-        self.r_motor = wpilib.simulation.PWMSim(FRONT_RIGHT_MOTOR_PORT)
+        self.l_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_LEFT_MOTOR_PORT)
+        self.r_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_RIGHT_MOTOR_PORT)
 
         # Drivetrain (arbitrary values used)
         self.drivetrain = tankmodel.TankModel.theory(
@@ -21,7 +21,7 @@ class PhysicsEngine:
             robot_mass=90 * units.lbs,
             gearing=10.71,
             nmotors=2,
-            x_wheelbase=2 * units.feet,
+            x_wheelbase=21.865 * units.inch,
             wheel_diameter=6 * units.inch
         )
 

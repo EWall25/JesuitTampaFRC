@@ -4,6 +4,7 @@ import wpimath.kinematics
 import wpimath.controller
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 
+from constants import DriveConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
 
@@ -13,6 +14,7 @@ class FollowPath(commands2.RamseteCommand):
         self.drive = drive
 
         # Configure the trajectory
+        # TODO: Move max acceleration and velocity values into config
         config = wpimath.trajectory.TrajectoryConfig(5, 2)
         config.setKinematics(drive.kinematics)
 
@@ -34,11 +36,23 @@ class FollowPath(commands2.RamseteCommand):
             trajectory=self.trajectory,
             pose=drive.get_pose,
             controller=wpimath.controller.RamseteController(),
-            feedforward=wpimath.controller.SimpleMotorFeedforwardMeters(1, 1, 1),
+            feedforward=wpimath.controller.SimpleMotorFeedforwardMeters(
+                DriveConstants.S_VOLTS,
+                DriveConstants.V_VOLT_SECONDS_PER_METRE,
+                DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METRE
+            ),
             kinematics=drive.kinematics,
             wheelSpeeds=drive.get_wheel_speeds,
-            leftController=wpimath.controller.PIDController(1, 0, 0),
-            rightController=wpimath.controller.PIDController(1, 0, 0),
+            leftController=wpimath.controller.PIDController(
+                DriveConstants.P_GAIN,
+                DriveConstants.I_GAIN,
+                DriveConstants.D_GAIN
+            ),
+            rightController=wpimath.controller.PIDController(
+                DriveConstants.P_GAIN,
+                DriveConstants.I_GAIN,
+                DriveConstants.D_GAIN
+            ),
             output=drive.tank_drive_volts,
             requirements=[drive]
         )
