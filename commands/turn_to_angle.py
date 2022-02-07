@@ -11,7 +11,8 @@ class TurnToAngle(commands2.PIDCommand):
             wpimath.controller.PIDController(DriveConstants.P_GAIN, DriveConstants.I_GAIN, DriveConstants.D_GAIN),
             drive.get_heading,
             target_angle_degrees,
-            lambda output: drive.arcade_drive(0, output),
+            # Output will be in volts, so rotate the robot by driving positive on one motor and negative on the other
+            lambda output: drive.tank_drive_volts(output, -output),
             [drive]
         )
 

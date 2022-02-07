@@ -16,7 +16,8 @@ class DriveDistance(commands2.PIDCommand):
             ),
             drive.get_average_distance,
             metres,
-            lambda output: drive.arcade_drive(output, 0),
+            # Output will be in volts, so drive both motors with the output value
+            lambda output: drive.tank_drive_volts(output, output),
             [drive]
         )
 
