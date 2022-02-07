@@ -6,6 +6,7 @@ from commands.default_drive import DefaultDrive
 from commands.drive_distance import DriveDistance
 from commands.timed_drive import TimedDrive
 from commands.turn_to_angle import TurnToAngle
+from commands.turn_to_angle_simple_p import TurnToAngleSimpleP
 from constants import DriveConstants, DriverStationConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
@@ -25,21 +26,25 @@ class RobotContainer:
         # Autonomous routines
 
         # Auto routine which drives forwards for 5 seconds, then stops
-        self.timedAuto = TimedDrive(self.drive, self.timer, 5, 0.7)
+        self.timed_auto = TimedDrive(self.drive, self.timer, 5, 0.7)
 
         # Auto routine which drives forwards 2 metres, then stops
-        self.distanceAuto = DriveDistance(self.drive, 2)
+        self.distance_auto = DriveDistance(self.drive, 2)
 
         # Auto routine which turns to 90 degrees
-        self.angleAuto = TurnToAngle(self.drive, 90)
+        self.angle_auto = TurnToAngle(self.drive, 90)
+
+        # Simple auto routine which turns to 90 degrees
+        self.simple_angle_auto = TurnToAngleSimpleP(self.drive, 90)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
-        self.chooser.setDefaultOption("Timed Auto", self.timedAuto)
-        self.chooser.addOption("Distance Auto", self.distanceAuto)
-        self.chooser.addOption("Angle Auto", self.angleAuto)
+        self.chooser.setDefaultOption("Timed Auto", self.timed_auto)
+        self.chooser.addOption("Distance Auto", self.distance_auto)
+        self.chooser.addOption("Angle Auto", self.angle_auto)
+        self.chooser.addOption("Simple Angle Auto", self.simple_angle_auto)
         self.chooser.addOption("Nothing", commands2.InstantCommand())
 
         # Put the chooser on the dashboard
