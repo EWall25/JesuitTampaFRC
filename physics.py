@@ -4,6 +4,7 @@ from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics.units import units
 
 from constants import DriveConstants
+from util import Units
 
 
 class PhysicsEngine:
@@ -14,6 +15,10 @@ class PhysicsEngine:
         # Motors
         self.l_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_LEFT_MOTOR_PORT)
         self.r_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_RIGHT_MOTOR_PORT)
+
+        # Encoders
+        self.l_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.LEFT_ENCODER_PORTS[0])
+        self.r_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.RIGHT_ENCODER_PORTS[0])
 
         # Drivetrain (arbitrary values used)
         self.drivetrain = tankmodel.TankModel.theory(
@@ -31,3 +36,15 @@ class PhysicsEngine:
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
         self.physics_controller.move_robot(transform)
+
+        l_position = Units.feet_to_metres(self.drivetrain.l_position)
+        r_position = Units.feet_to_metres(self.drivetrain.r_position)
+        l_velocity = Units.feet_to_metres(self.drivetrain.l_velocity)
+        r_velocity = Units.feet_to_metres(self.drivetrain.r_velocity)
+
+        self.l_encoder.setDistance(l_position)
+        self.r_encoder.setDistance(r_position)
+        self.l_encoder.setRate(l_velocity)
+        self.r_encoder.setRate(r_velocity)
+
+        # TODO: Add gyro sim
