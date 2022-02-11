@@ -1,15 +1,17 @@
+import ctre
 import wpilib.simulation
 from pyfrc.physics import tankmodel, motor_cfgs
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics.units import units
 
+from robot import StealthTigersRobot
 from constants import DriveConstants
 from util import Units
 
 
 class PhysicsEngine:
 
-    def __init__(self, physics_controller: PhysicsInterface):
+    def __init__(self, physics_controller: PhysicsInterface, robot: StealthTigersRobot):
         self.physics_controller = physics_controller
 
         # Motors
@@ -19,6 +21,9 @@ class PhysicsEngine:
         # Encoders
         self.l_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.LEFT_ENCODER_PORTS[0])
         self.r_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.RIGHT_ENCODER_PORTS[0])
+
+        # Gyro
+        self.sim_imu = ctre.BasePigeonSimCollection(robot.container.drive.imu, False)
 
         # Drivetrain (arbitrary values used)
         self.drivetrain = tankmodel.TankModel.theory(
@@ -35,7 +40,7 @@ class PhysicsEngine:
         r_motor = self.r_motor.getSpeed()
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
-        self.physics_controller.move_robot(transform)
+        pose = self.physics_controller.move_robot(transform)
 
         l_position = Units.feet_to_metres(self.drivetrain.l_position)
         r_position = Units.feet_to_metres(self.drivetrain.r_position)
@@ -47,4 +52,4 @@ class PhysicsEngine:
         self.l_encoder.setRate(l_velocity)
         self.r_encoder.setRate(r_velocity)
 
-        # TODO: Add gyro sim
+        self.sim_imu.setRawHeading(pose.rotation().degrees())
