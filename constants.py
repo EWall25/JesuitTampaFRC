@@ -60,11 +60,6 @@ class ArmConstants:
 class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
 
-    TURN_TO_ZERO_BUTTON = 4
-    TURN_TO_NINETY_BUTTON = 3
-    TURN_TO_ONE_EIGHTY_BUTTON = 2
-    TURN_TO_NEGATIVE_NINETY_BUTTON = 1
-
 
 class AutoConstants:
     pass

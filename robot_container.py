@@ -61,19 +61,19 @@ class RobotContainer:
 
     def configure_button_bindings(self) -> None:
         # Turn to 0 degrees when a button is pushed
-        commands2.button.JoystickButton(self.stick, DriverStationConstants.TURN_TO_ZERO_BUTTON).whenPressed(
+        commands2.button.JoystickButton(self.stick, self.stick.Button.kTriangle).whenPressed(
             TurnToAngle(self.drive, 0.0).withTimeout(5)  # Timeout the command if it hasn't completed after 5 seconds
         )
         # Turn to 90 degrees when a button is pushed
-        commands2.button.JoystickButton(self.stick, DriverStationConstants.TURN_TO_NINETY_BUTTON).whenPressed(
+        commands2.button.JoystickButton(self.stick, self.stick.Button.kCircle).whenPressed(
             TurnToAngle(self.drive, 90.0).withTimeout(5)
         )
         # Turn to 180 degrees when a button is pushed
-        commands2.button.JoystickButton(self.stick, DriverStationConstants.TURN_TO_ONE_EIGHTY_BUTTON).whenPressed(
-            TurnToAngle(self.drive, 179.0).withTimeout(5)
+        commands2.button.JoystickButton(self.stick, self.stick.Button.kCross).whenPressed(
+            TurnToAngle(self.drive, 179.9).withTimeout(5)
         )
         # Turn to -90 degrees (90 degrees left) when a button is pushed
-        commands2.button.JoystickButton(self.stick, DriverStationConstants.TURN_TO_NEGATIVE_NINETY_BUTTON).whenPressed(
+        commands2.button.JoystickButton(self.stick, self.stick.Button.kSquare).whenPressed(
             TurnToAngle(self.drive, -90.0).withTimeout(5)
         )
 
