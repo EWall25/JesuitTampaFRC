@@ -10,9 +10,9 @@ class DriveDistance(commands2.PIDCommand):
     def __init__(self, drive: DriveSubsystem, metres: float):
         super().__init__(
             wpimath.controller.PIDController(
-                DriveConstants.P_GAIN,
-                DriveConstants.I_GAIN,
-                DriveConstants.D_GAIN
+                DriveConstants.DRIVE_METRES_P,
+                DriveConstants.DRIVE_METRES_I,
+                DriveConstants.DRIVE_METRES_D
             ),
             drive.get_average_distance,
             metres,
@@ -22,7 +22,7 @@ class DriveDistance(commands2.PIDCommand):
         )
 
         self.controller = self.getController()
-        self.controller.setTolerance(DriveConstants.LINEAR_TOLERANCE_METRES)
+        self.controller.setTolerance(DriveConstants.DRIVE_TOLERANCE_METRES)
 
     def isFinished(self) -> bool:
         return self.controller.atSetpoint()

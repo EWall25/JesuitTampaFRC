@@ -2,17 +2,18 @@ from math import pi
 
 
 class DriveConstants:
-
     FRONT_RIGHT_MOTOR_PORT = 0
     BACK_RIGHT_MOTOR_PORT = 1
     FRONT_LEFT_MOTOR_PORT = 2
     BACK_LEFT_MOTOR_PORT = 3
 
-    DEFAULT_LINEAR_SPEED = 0.5
-    BOOST_LINEAR_SPEED = 1
-    ANGULAR_SPEED = 0.5
+    TELEOP_DEFAULT_DRIVE_SPEED = 0.5
+    TELEOP_BOOST_DRIVE_SPEED = 1
+    TELEOP_TURN_SPEED = 0.5
 
-    MAX_ACCELERATION_PER_SECOND = 1
+    # How many arbitrary units the robot will accelerate in a second
+    # For example, a value of 2 will make the robot accelerate to full power in 0.5 seconds
+    TELEOP_DRIVE_ACCELERATION_PER_SECOND = 2
 
     WHEELBASE_METRES = 21.8625 / 39.37
 
@@ -20,11 +21,20 @@ class DriveConstants:
     V_VOLT_SECONDS_PER_METRE = 0.5
     A_VOLT_SECONDS_SQUARED_PER_METRE = 0
 
-    P_GAIN = 1
-    I_GAIN = 0
-    D_GAIN = 0
-    LINEAR_TOLERANCE_METRES = 0.12
-    ANGULAR_TOLERANCE_DEGREES = 3
+    TURN_DEGREES_P = 1
+    TURN_DEGREES_I = 0
+    TURN_DEGREES_D = 0
+
+    VELOCITY_P = 1
+    VELOCITY_I = 0
+    VELOCITY_D = 0
+
+    DRIVE_METRES_P = 1
+    DRIVE_METRES_I = 0
+    DRIVE_METRES_D = 0
+
+    DRIVE_TOLERANCE_METRES = 0.12
+    TURN_TOLERANCE_DEGREES = 3
 
     # LEFT_ENCODER_PORT = 0
     # RIGHT_ENCODER_PORT = 1
@@ -38,8 +48,16 @@ class DriveConstants:
     IMU_PORT = 1
 
 
-class DriverStationConstants:
+class ArmConstants:
+    MOTOR_PORT = 4
 
+    ENCODER_PORTS = (4, 5)
+
+    UPPER_LIMIT_SWITCH_PORT = 6
+    LOWER_LIMIT_SWITCH_PORT = 7
+
+
+class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
 
     TURN_TO_ZERO_BUTTON = 4

@@ -6,7 +6,6 @@ from commands.default_drive import DefaultDrive
 from commands.drive_distance import DriveDistance
 from commands.timed_drive import TimedDrive
 from commands.turn_to_angle import TurnToAngle
-from commands.turn_to_angle_simple_p import TurnToAngleSimpleP
 from constants import DriveConstants, DriverStationConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
@@ -34,9 +33,6 @@ class RobotContainer:
         # Auto routine which turns to 90 degrees
         self.angle_auto = TurnToAngle(self.drive, 90)
 
-        # Simple auto routine which turns to 90 degrees
-        self.simple_angle_auto = TurnToAngleSimpleP(self.drive, 90)
-
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
@@ -44,7 +40,6 @@ class RobotContainer:
         self.chooser.setDefaultOption("Timed Auto", self.timed_auto)
         self.chooser.addOption("Distance Auto", self.distance_auto)
         self.chooser.addOption("Angle Auto", self.angle_auto)
-        self.chooser.addOption("Simple Angle Auto", self.simple_angle_auto)
         self.chooser.addOption("Nothing", commands2.InstantCommand())
 
         # Put the chooser on the dashboard
@@ -57,10 +52,10 @@ class RobotContainer:
             DefaultDrive(
                 self.drive,
                 # Set the forward speed to the left stick's Y axis. If the right bumper is pressed, speed up
-                lambda: -self.stick.getLeftY() * (DriveConstants.BOOST_LINEAR_SPEED if self.stick.getR1Button() else
-                                                  DriveConstants.DEFAULT_LINEAR_SPEED),
+                lambda: -self.stick.getLeftY() * (DriveConstants.TELEOP_BOOST_DRIVE_SPEED if self.stick.getR1Button()
+                                                  else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
                 # Set the rotation speed to the right stick's X axis.
-                lambda: self.stick.getRightX() * DriveConstants.ANGULAR_SPEED
+                lambda: self.stick.getRightX() * DriveConstants.TELEOP_TURN_SPEED
             )
         )
 

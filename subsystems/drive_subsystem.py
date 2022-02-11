@@ -2,8 +2,8 @@ import commands2
 import wpilib
 import wpilib.drive
 import wpimath.kinematics
-from wpimath.geometry import Pose2d, Rotation2d
 from ctre import PigeonIMU, CANCoder, SensorTimeBase
+from wpimath.geometry import Pose2d, Rotation2d
 
 from constants import DriveConstants
 
@@ -122,13 +122,6 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         self.drive.stopMotor()
 
-    def reset_heading(self) -> None:
-        """
-        Zeroes the gyroscope's heading.
-        """
-
-        self.imu.setYaw(0)
-
     def get_heading(self) -> float:
         """
         Gets the robot's heading direction.
@@ -173,6 +166,21 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
         return wpimath.kinematics.DifferentialDriveWheelSpeeds(self.l_encoder.getRate(), self.r_encoder.getRate())
 
+    def get_pose(self) -> Pose2d:
+        """
+        Gets the robot's position and rotation on the field from the odometry.
+        :return: The robot's pose
+        """
+
+        return self.pose
+
+    def reset_heading(self) -> None:
+        """
+        Zeroes the gyroscope's heading.
+        """
+
+        self.imu.setYaw(0)
+
     def reset_encoders(self) -> None:
         """
         Resets the encoders' values to 0
@@ -182,14 +190,6 @@ class DriveSubsystem(commands2.SubsystemBase):
         # self.r_encoder.setPosition(0)
         self.l_encoder.reset()
         self.r_encoder.reset()
-
-    def get_pose(self) -> Pose2d:
-        """
-        Gets the robot's position and rotation on the field from the odometry.
-        :return: The robot's pose
-        """
-
-        return self.pose
 
     def reset_pose(self, pose: Pose2d) -> None:
         """

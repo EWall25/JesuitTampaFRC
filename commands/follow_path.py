@@ -1,7 +1,7 @@
 import commands2
-import wpimath.trajectory
-import wpimath.kinematics
 import wpimath.controller
+import wpimath.kinematics
+import wpimath.trajectory
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 
 from constants import DriveConstants
@@ -44,14 +44,14 @@ class FollowPath(commands2.RamseteCommand):
             kinematics=drive.kinematics,
             wheelSpeeds=drive.get_wheel_speeds,
             leftController=wpimath.controller.PIDController(
-                DriveConstants.P_GAIN,
-                DriveConstants.I_GAIN,
-                DriveConstants.D_GAIN
+                DriveConstants.VELOCITY_P,
+                DriveConstants.VELOCITY_I,
+                DriveConstants.VELOCITY_D
             ),
             rightController=wpimath.controller.PIDController(
-                DriveConstants.P_GAIN,
-                DriveConstants.I_GAIN,
-                DriveConstants.D_GAIN
+                DriveConstants.VELOCITY_P,
+                DriveConstants.VELOCITY_I,
+                DriveConstants.VELOCITY_D
             ),
             output=drive.tank_drive_volts,
             requirements=[drive]

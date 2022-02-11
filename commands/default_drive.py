@@ -28,7 +28,7 @@ class DefaultDrive(commands2.CommandBase):
         self.rotation = rotation
 
         # A SlewRateLimiter limits our acceleration in order to make the robot move smoother
-        self.filter = wpimath.filter.SlewRateLimiter(DriveConstants.MAX_ACCELERATION_PER_SECOND)
+        self.filter = wpimath.filter.SlewRateLimiter(DriveConstants.TELEOP_DRIVE_ACCELERATION_PER_SECOND)
 
         self.addRequirements([drive])
 
