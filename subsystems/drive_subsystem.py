@@ -67,18 +67,15 @@ class DriveSubsystem(commands2.SubsystemBase):
         # Odometry allows us to know the position of the robot during autonomous.
         # It shouldn't be used during teleop because of drift from colliding with
         # other robots.
-        # See periodic() for why the heading needs to be negated. I'm not writing it again.
         self.odometry = wpimath.kinematics.DifferentialDriveOdometry(
-            Rotation2d.fromDegrees(-self.get_heading()), Pose2d(0, 0, Rotation2d()))
+            Rotation2d.fromDegrees(self.get_heading()), Pose2d(0, 0, Rotation2d()))
 
         # Create kinematics. Kinematics allow us to learn the wheel speeds from the robot's speed.
         self.kinematics = wpimath.kinematics.DifferentialDriveKinematics(DriveConstants.WHEELBASE_METRES)
 
     def periodic(self) -> None:
-        # Get the gyro angle. We have to negate it because WPILib classes expect
-        # a negative value as the robot turns clockwise. Our gyro returns a positive
-        # value as the robot turns clockwise.
-        heading = Rotation2d.fromDegrees(-self.get_heading())
+        # Get the gyro angle. Our gyro returns a negative value as it rotates clockwise.
+        heading = Rotation2d.fromDegrees(self.get_heading())
 
         # Get the distance the robot has driven in metres.
         l_distance = self.get_left_wheel_distance()
@@ -198,10 +195,8 @@ class DriveSubsystem(commands2.SubsystemBase):
         :param pose: The pose to reset the odometry to
         """
 
-        # Get the gyro angle. We have to negate it because WPILib classes expect
-        # a negative value as the robot turns clockwise. Our gyro returns a positive
-        # value as the robot turns clockwise.
-        heading = Rotation2d.fromDegrees(-self.get_heading())
+        # Get the gyro angle
+        heading = Rotation2d.fromDegrees(self.get_heading())
 
         self.reset_encoders()
 
