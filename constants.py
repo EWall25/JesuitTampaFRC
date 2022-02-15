@@ -56,9 +56,21 @@ class ArmConstants:
     UPPER_LIMIT_SWITCH_PORT = 6
     LOWER_LIMIT_SWITCH_PORT = 7
 
+    LOWER_HUB_HEIGHT_DEGREES = 1
+    RAMP_HEIGHT_DEGREES = 1
+
+    ROTATION_P = 1
+    ROTATION_I = 0
+    ROTATION_D = 0
+
+    ROTATION_TOLERANCE_DEGREES = 3
+
 
 class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
+
+    DRIVE_STICK = 1
+    TURN_STICK = 4
 
 
 class AutoConstants:

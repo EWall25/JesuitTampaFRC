@@ -2,12 +2,15 @@ import commands2
 import commands2.button
 import wpilib
 
-from commands.default_drive import DefaultDrive
-from commands.drive_distance import DriveDistance
-from commands.timed_drive import TimedDrive
-from commands.turn_to_angle import TurnToAngle
+from commands.drive.default_drive import DefaultDrive
+from commands.drive.drive_distance import DriveDistance
+from commands.drive.drive_distance_simple import DriveDistanceSimple
+from commands.drive.timed_drive import TimedDrive
+from commands.drive.turn_to_angle import TurnToAngle
 from constants import DriveConstants, DriverStationConstants
+from subsystems.arm_subsystem import ArmSubsystem
 from subsystems.drive_subsystem import DriveSubsystem
+from util import Units
 
 
 class RobotContainer:
@@ -21,8 +24,17 @@ class RobotContainer:
 
         # Subsystems
         self.drive = DriveSubsystem()
+        self.arm = ArmSubsystem()
 
         # Autonomous routines
+
+        # Competition autonomous routine
+        self.competition_auto = commands2.SequentialCommandGroup(
+            # TODO: Raise Arm
+            # TODO: Lower Arm
+            # Drive out of the tarmack
+            DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5))
+        )
 
         # Auto routine which drives forwards for 5 seconds, then stops
         self.timed_auto = TimedDrive(self.drive, self.timer, 5, 0.7)
@@ -37,7 +49,8 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
-        self.chooser.setDefaultOption("Timed Auto", self.timed_auto)
+        self.chooser.setDefaultOption("Competition", self.competition_auto)
+        self.chooser.addOption("Timed Auto", self.timed_auto)
         self.chooser.addOption("Distance Auto", self.distance_auto)
         self.chooser.addOption("Angle Auto", self.angle_auto)
         self.chooser.addOption("Nothing", commands2.InstantCommand())
@@ -52,10 +65,11 @@ class RobotContainer:
             DefaultDrive(
                 self.drive,
                 # Set the forward speed to the left stick's Y axis. If the right bumper is pressed, speed up
-                lambda: -self.stick.getLeftY() * (DriveConstants.TELEOP_BOOST_DRIVE_SPEED if self.stick.getR1Button()
-                                                  else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
+                lambda: -self.stick.getRawAxis(DriverStationConstants.DRIVE_STICK) * (
+                    DriveConstants.TELEOP_BOOST_DRIVE_SPEED if self.stick.getR1Button()
+                    else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
                 # Set the rotation speed to the right stick's X axis.
-                lambda: self.stick.getRightX() * DriveConstants.TELEOP_TURN_SPEED
+                lambda: self.stick.getRawAxis(DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED
             )
         )
 

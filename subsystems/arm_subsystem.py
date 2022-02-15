@@ -21,45 +21,34 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
         self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
-        self._safety = True
+    def _safety(self, value: float) -> bool:
+        """
+        Is it safe to drive the motor?
+        :param value: The power/voltage being fed to the motor. Positive should be clockwise.
+        """
+
+        if (value > 0 and self.at_upper_limit()) or (value < 0 and self.at_lower_limit()):
+            self.motor.stopMotor()
+            return False
+        return True
 
     def move(self, value: float) -> None:
-        if self.safety_enabled():
-            # Don't move if we're at the arms upper limit
-            if value > 0 and self.at_upper_limit():
-                return
-
-            # Don't move if we're at the arms lower limit
-            if value < 0 and self.at_lower_limit():
-                return
-
-        self.motor.set(value)
+        if self._safety(value):
+            self.motor.set(value)
 
     def set_voltage(self, volts: float) -> None:
-        if self.safety_enabled():
-            # Don't move if we're at the arms upper limit
-            if volts > 0 and self.at_upper_limit():
-                return
+        if self._safety(volts):
+            self.motor.setVoltage(volts)
 
-            # Don't move if we're at the arms lower limit
-            if volts < 0 and self.at_lower_limit():
-                return
-
-        self.motor.setVoltage(volts)
-
-    def set_safety(self, safety: bool) -> None:
-        """
-        Changes whether the arm can move past the limit switches. Safety should be on during normal operation.
-        :param safety: Should safety features be on or off
-        """
-
-        self._safety = safety
+    def stop(self) -> None:
+        self.motor.stopMotor()
 
     def at_upper_limit(self) -> bool:
         """
         Can the arm move further upwards?
         :return: Has the upper limit switch been tripped?
         """
+
         return self.upper_limit.get()
 
     def at_lower_limit(self) -> bool:
@@ -67,18 +56,21 @@ class ArmSubsystem(commands2.SubsystemBase):
         Can the arm move further downwards?
         :return: Has the lower limit switch been tripped?
         """
+
         return self.lower_limit.get()
 
     def get_position(self) -> float:
+        """
+        Gets the arm's rotation.
+        :return: The arm motor's rotation in degrees
+        """
+
         return self.encoder.getDistance()
 
     def get_speed(self) -> float:
+        """
+        Gets the arm's speed.
+        :return: The arm motor's speed in degrees per second
+        """
+
         return self.encoder.getRate()
-
-    def safety_enabled(self) -> bool:
-        """
-        Can the arm move past its limit switches? Should be False during normal operation.
-        :return: Are safety features on
-        """
-
-        return self._safety
