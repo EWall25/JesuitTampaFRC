@@ -3,7 +3,7 @@ import typing
 import commands2
 import wpimath.filter
 
-from constants import *
+from constants import DriveConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
 
@@ -28,7 +28,7 @@ class DefaultDrive(commands2.CommandBase):
         self.rotation = rotation
 
         # A SlewRateLimiter limits our acceleration in order to make the robot move smoother
-        self.filter = wpimath.filter.SlewRateLimiter(MAX_ACCELERATION)
+        self.filter = wpimath.filter.SlewRateLimiter(DriveConstants.TELEOP_DRIVE_ACCELERATION_PER_SECOND)
 
         self.addRequirements([drive])
 
