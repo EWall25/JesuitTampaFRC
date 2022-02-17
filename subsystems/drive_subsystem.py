@@ -24,7 +24,7 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # Both drive motors on the left side of the robot
         self.l_motors = wpilib.MotorControllerGroup(self.fl_motor, self.bl_motor)
-        self.l_motors.setInverted(False)
+        self.l_motors.setInverted(DriveConstants.L)
 
         # Both drive motors on the right side of the robot
         self.r_motors = wpilib.MotorControllerGroup(self.fr_motor, self.br_motor)
@@ -33,21 +33,25 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.drive = wpilib.drive.DifferentialDrive(self.l_motors, self.r_motors)
 
         # Left side encoder
-        # self.l_encoder = CANCoder(2)
-        self.l_encoder = wpilib.Encoder(*DriveConstants.LEFT_ENCODER_PORTS)
-        self.l_encoder.setReverseDirection(False)
+        self.l_encoder = CANCoder(DriveConstants.LEFT_ENCODER_PORT)
+        self.l_encoder.configSensorDirection(DriveConstants.LEFT_MOTORS_INVERTED)
+        # self.l_encoder = wpilib.Encoder(*DriveConstants.LEFT_ENCODER_PORTS)
+        # self.l_encoder.setReverseDirection(False)
 
         # Right side encoder
-        # self.r_encoder = CANCoder(3)
-        self.r_encoder = wpilib.Encoder(*DriveConstants.RIGHT_ENCODER_PORTS)
-        self.r_encoder.setReverseDirection(True)
+        self.r_encoder = CANCoder(DriveConstants.RIGHT_ENCODER_PORT)
+        self.r_encoder.configSensorDirection(DriveConstants.RIGHT_MOTORS_INVERTED)
+        # self.r_encoder = wpilib.Encoder(*DriveConstants.RIGHT_ENCODER_PORTS)
+        # self.r_encoder.setReverseDirection(True)
 
         # Configure the encoders to return a value in metres
         # Uses the wheel diameter and number of "counts" per motor rotation to calculate distance
-        # self.l_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
-        # self.r_encoder.configFeedbackCoefficient(6 * math.pi / 4096, "inches", SensorTimeBase.PerSecond)
-        self.l_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
-        self.r_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
+        self.l_encoder.configFeedbackCoefficient(DriveConstants.ENCODER_DISTANCE_PER_PULSE, "metres",
+                                                 SensorTimeBase.PerSecond)
+        self.r_encoder.configFeedbackCoefficient(DriveConstants.ENCODER_DISTANCE_PER_PULSE, "metres",
+                                                 SensorTimeBase.PerSecond)
+        # self.l_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
+        # self.r_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
 
         # Put encoders to Smart Dashboard
         wpilib.SmartDashboard.putData("Left Encoder", self.l_encoder)
@@ -78,8 +82,8 @@ class DriveSubsystem(commands2.SubsystemBase):
         heading = Rotation2d.fromDegrees(self.get_heading())
 
         # Get the distance the robot has driven in metres.
-        l_distance = self.get_left_wheel_distance()
-        r_distance = self.get_right_wheel_distance()
+        l_distance = self.get_left_distance()
+        r_distance = self.get_right_distance()
 
         # Update the robot's position and rotation on the field
         self.pose = self.odometry.update(heading, l_distance, r_distance)
@@ -130,21 +134,27 @@ class DriveSubsystem(commands2.SubsystemBase):
         ypr = self.imu.getYawPitchRoll()[1]
         return ypr[0]
 
-    def get_left_wheel_distance(self) -> float:
+    def get_left_distance(self) -> float:
         """
         Gets the distance travelled by the robot's left wheel.
         :return: The distance travelled by the left wheel in metres.
         """
 
-        return self.l_encoder.getDistance()
+        return self.l_encoder.getPosition()
 
-    def get_right_wheel_distance(self) -> float:
+    def get_right_distance(self) -> float:
         """
         Gets the distance travelled by the robot's right wheel.
         :return: The distance travelled by the right wheel in metres.
         """
 
-        return self.r_encoder.getDistance()
+        return self.r_encoder.getPosition()
+
+    def get_left_velocity(self) -> float:
+        return self.l_encoder.getVelocity()
+
+    def get_right_velocity(self) -> float:
+        return self.r_encoder.getVelocity()
 
     def get_average_distance(self) -> float:
         """
@@ -154,14 +164,14 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # Add together the left encoder and right encoder's position then average them by dividing by 2
         # return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
-        return (self.get_left_wheel_distance() + self.get_right_wheel_distance()) / 2
+        return (self.get_left_distance() + self.get_right_distance()) / 2
 
     def get_wheel_speeds(self) -> wpimath.kinematics.DifferentialDriveWheelSpeeds:
         """
         Gets both wheels' speeds.
         :return: The wheels' speeds as a DifferentialDriveWheelSpeeds object
         """
-        return wpimath.kinematics.DifferentialDriveWheelSpeeds(self.l_encoder.getRate(), self.r_encoder.getRate())
+        return wpimath.kinematics.DifferentialDriveWheelSpeeds(self.get_left_velocity(), self.get_right_velocity())
 
     def get_pose(self) -> Pose2d:
         """
@@ -183,10 +193,10 @@ class DriveSubsystem(commands2.SubsystemBase):
         Resets the encoders' values to 0
         """
 
-        # self.l_encoder.setPosition(0)
-        # self.r_encoder.setPosition(0)
-        self.l_encoder.reset()
-        self.r_encoder.reset()
+        self.l_encoder.setPosition(0)
+        self.r_encoder.setPosition(0)
+        # self.l_encoder.reset()
+        # self.r_encoder.reset()
 
     def reset_pose(self, pose: Pose2d) -> None:
         """

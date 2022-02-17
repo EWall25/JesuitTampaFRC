@@ -18,7 +18,7 @@ class DriveDistanceSimple(commands2.CommandBase):
         self.drive.reset_encoders()
 
     def execute(self) -> None:
-        distance = self.drive.get_left_wheel_distance() # TODO: Change back to get_average_distance
+        distance = self.drive.get_left_distance() # TODO: Change back to get_average_distance
         drive_forward = self.goal > distance
         if drive_forward:
             self.drive.arcade_drive(0.5, 0)
