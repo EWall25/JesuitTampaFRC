@@ -10,7 +10,9 @@ class ArmSubsystem(commands2.SubsystemBase):
         super().__init__()
 
         # Arm motor
-        self.motor = wpilib.Spark(ArmConstants.MOTOR_PORT)
+        self.motor_1 = wpilib.Spark(ArmConstants.MOTOR_1_PORT)
+        self.motor_2 = wpilib.Spark(ArmConstants.MOTOR_2_PORT)
+        self.motor = wpilib.MotorControllerGroup(self.motor_1, self.motor_2)
 
         # Arm encoder
         self.encoder = wpilib.Encoder(*ArmConstants.ENCODER_PORTS)
@@ -33,11 +35,11 @@ class ArmSubsystem(commands2.SubsystemBase):
         return True
 
     def move(self, value: float) -> None:
-        if self._safety(value):
+        if True:    # self._safety(value)
             self.motor.set(value)
 
     def set_voltage(self, volts: float) -> None:
-        if self._safety(volts):
+        if True:    # self._safety(volts)
             self.motor.setVoltage(volts)
 
     def stop(self) -> None:

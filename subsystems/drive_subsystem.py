@@ -24,25 +24,21 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # Both drive motors on the left side of the robot
         self.l_motors = wpilib.MotorControllerGroup(self.fl_motor, self.bl_motor)
-        self.l_motors.setInverted(DriveConstants.L)
+        self.l_motors.setInverted(DriveConstants.LEFT_MOTORS_INVERTED)
 
         # Both drive motors on the right side of the robot
         self.r_motors = wpilib.MotorControllerGroup(self.fr_motor, self.br_motor)
-        self.r_motors.setInverted(True)
+        self.r_motors.setInverted(DriveConstants.RIGHT_MOTORS_INVERTED)
 
         self.drive = wpilib.drive.DifferentialDrive(self.l_motors, self.r_motors)
 
         # Left side encoder
         self.l_encoder = CANCoder(DriveConstants.LEFT_ENCODER_PORT)
-        self.l_encoder.configSensorDirection(DriveConstants.LEFT_MOTORS_INVERTED)
         # self.l_encoder = wpilib.Encoder(*DriveConstants.LEFT_ENCODER_PORTS)
-        # self.l_encoder.setReverseDirection(False)
 
         # Right side encoder
         self.r_encoder = CANCoder(DriveConstants.RIGHT_ENCODER_PORT)
-        self.r_encoder.configSensorDirection(DriveConstants.RIGHT_MOTORS_INVERTED)
         # self.r_encoder = wpilib.Encoder(*DriveConstants.RIGHT_ENCODER_PORTS)
-        # self.r_encoder.setReverseDirection(True)
 
         # Configure the encoders to return a value in metres
         # Uses the wheel diameter and number of "counts" per motor rotation to calculate distance
@@ -54,8 +50,8 @@ class DriveSubsystem(commands2.SubsystemBase):
         # self.r_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
 
         # Put encoders to Smart Dashboard
-        wpilib.SmartDashboard.putData("Left Encoder", self.l_encoder)
-        wpilib.SmartDashboard.putData("Right Encoder", self.r_encoder)
+        # wpilib.SmartDashboard.putData("Left Encoder", self.l_encoder)
+        # wpilib.SmartDashboard.putData("Right Encoder", self.r_encoder)
 
         # Inertia Measurement Unit/Gyroscope
         self.imu = PigeonIMU(DriveConstants.IMU_PORT)
@@ -90,6 +86,12 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # Update the robot's heading direction on the Smart Dashboard
         wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
+
+        # Update the encoders on the Smart Dashboard
+        wpilib.SmartDashboard.putNumber("Left Distance", self.get_left_distance())
+        wpilib.SmartDashboard.putNumber("Left Velocity", self.get_left_velocity())
+        wpilib.SmartDashboard.putNumber("Right Distance", self.get_right_distance())
+        wpilib.SmartDashboard.putNumber("Right Velocity", self.get_right_velocity())
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """

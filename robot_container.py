@@ -2,6 +2,7 @@ import commands2
 import commands2.button
 import wpilib
 
+from commands.arm.default_arm import DefaultArm
 from commands.drive.default_drive import DefaultDrive
 from commands.drive.drive_distance import DriveDistance
 from commands.drive.drive_distance_simple import DriveDistanceSimple
@@ -70,6 +71,15 @@ class RobotContainer:
                     else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
                 # Set the rotation speed to the right stick's X axis.
                 lambda: self.stick.getRawAxis(DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED
+            )
+        )
+
+        # Setup default arm mode
+        self.arm.setDefaultCommand(
+            DefaultArm(
+                self.arm,
+                lambda: self.stick.getRawAxis(3),
+                lambda: self.stick.getRawAxis(2)
             )
         )
 
