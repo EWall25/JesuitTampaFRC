@@ -75,6 +75,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.kinematics = wpimath.kinematics.DifferentialDriveKinematics(DriveConstants.WHEELBASE_METRES)
 
     def periodic(self) -> None:
+        # Put values to the Smart Dashboard
+        self._update_dashboard()
+
         # Get the gyro angle. Our gyro returns a negative value as it rotates clockwise.
         heading = Rotation2d.fromDegrees(self.get_heading())
 
@@ -85,6 +88,14 @@ class DriveSubsystem(commands2.SubsystemBase):
         # Update the robot's position and rotation on the field
         self.pose = self.odometry.update(heading, l_distance, r_distance)
 
+    def _update_dashboard(self):
+        wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
+        wpilib.SmartDashboard.putNumber("Left Distance", self.get_left_distance())
+        wpilib.SmartDashboard.putNumber("Left Velocity", self.get_left_velocity())
+        wpilib.SmartDashboard.putNumber("Right Distance", self.get_right_distance())
+        wpilib.SmartDashboard.putNumber("Right Velocity", self.get_right_velocity())
+
+    '''
     def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
         builder.setSmartDashboardType("Drivetrain")
         builder.addDoubleProperty("Heading", self.get_heading, self._set_heading)
@@ -92,6 +103,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         builder.addDoubleProperty("Left Velocity", self.get_left_velocity, lambda *args: None)
         builder.addDoubleProperty("Right Distance", self.get_right_distance, lambda *args: None)
         builder.addDoubleProperty("Right Velocity", self.get_right_velocity, lambda *args: None)
+    '''
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """

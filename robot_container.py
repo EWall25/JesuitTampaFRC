@@ -27,9 +27,12 @@ class RobotContainer:
         self.drive = DriveSubsystem()
         self.arm = ArmSubsystem()
 
+        # Disable arm limits TODO
+        self.arm.set_safety(False)
+
         # Add subsystems to the dashboard
-        wpilib.SmartDashboard.putData(self.drive)
-        wpilib.SmartDashboard.putData(self.arm)
+        # wpilib.SmartDashboard.putData(self.drive)
+        # wpilib.SmartDashboard.putData(self.arm)
 
         # Autonomous routines
 

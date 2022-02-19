@@ -25,11 +25,22 @@ class ArmSubsystem(commands2.SubsystemBase):
 
         self._safety = True
 
+    def periodic(self) -> None:
+        # Put values to the Smart Dashboard
+        self._update_dashboard()
+
+    def _update_dashboard(self):
+        wpilib.SmartDashboard.putBoolean("Safety Enabled", self.get_safety())
+        wpilib.SmartDashboard.putBoolean("Upper Limit Pressed", self.at_upper_limit())
+        wpilib.SmartDashboard.putBoolean("Lower Limit Pressed", self.at_lower_limit())
+
+    '''
     def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
         builder.setSmartDashboardType("Arm")
         builder.addBooleanProperty("Safety Enabled", self.get_safety, self.set_safety)
         builder.addBooleanProperty("Upper Limit", self.at_upper_limit, lambda *args: None)
         builder.addBooleanProperty("Lower Limit", self.at_lower_limit, lambda *args: None)
+    '''
 
     def _safe_to_move(self, value: float) -> bool:
         """
