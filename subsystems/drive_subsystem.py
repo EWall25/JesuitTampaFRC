@@ -2,6 +2,7 @@ import commands2
 import wpilib
 import wpilib.drive
 import wpimath.kinematics
+import wpiutil
 from ctre import PigeonIMU, CANCoder, SensorTimeBase
 from wpimath.geometry import Pose2d, Rotation2d
 
@@ -84,14 +85,13 @@ class DriveSubsystem(commands2.SubsystemBase):
         # Update the robot's position and rotation on the field
         self.pose = self.odometry.update(heading, l_distance, r_distance)
 
-        # Update the robot's heading direction on the Smart Dashboard
-        wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
-
-        # Update the encoders on the Smart Dashboard
-        wpilib.SmartDashboard.putNumber("Left Distance", self.get_left_distance())
-        wpilib.SmartDashboard.putNumber("Left Velocity", self.get_left_velocity())
-        wpilib.SmartDashboard.putNumber("Right Distance", self.get_right_distance())
-        wpilib.SmartDashboard.putNumber("Right Velocity", self.get_right_velocity())
+    def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
+        builder.setSmartDashboardType("Drivetrain")
+        builder.addDoubleProperty("Heading", self.get_heading, self._set_heading)
+        builder.addDoubleProperty("Left Distance", self.get_left_distance, lambda *args: None)
+        builder.addDoubleProperty("Left Velocity", self.get_left_velocity, lambda *args: None)
+        builder.addDoubleProperty("Right Distance", self.get_right_distance, lambda *args: None)
+        builder.addDoubleProperty("Right Velocity", self.get_right_velocity, lambda *args: None)
 
     def arcade_drive(self, forward: float, rotation: float) -> None:
         """
@@ -182,6 +182,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
 
         return self.pose
+
+    def _set_heading(self, heading: float) -> None:
+        self.imu.setYaw(heading)
 
     def reset_heading(self) -> None:
         """

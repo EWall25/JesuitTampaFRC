@@ -23,27 +23,51 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
         self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
-    def _safety(self, value: float) -> bool:
+        self._safety = True
+
+    def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
+        builder.setSmartDashboardType("Arm")
+        builder.addBooleanProperty("Safety Enabled", self.get_safety, self.set_safety)
+        builder.addBooleanProperty("Upper Limit", self.at_upper_limit, lambda *args: None)
+        builder.addBooleanProperty("Lower Limit", self.at_lower_limit, lambda *args: None)
+
+    def _safe_to_move(self, value: float) -> bool:
         """
         Is it safe to drive the motor?
         :param value: The power/voltage being fed to the motor. Positive should be clockwise.
         """
 
+        # Assume it's safe to move the arm if safety is disabled
+        if not self._safety:
+            return True
+
+        # Check if the arm is hitting its limits
         if (value > 0 and self.at_upper_limit()) or (value < 0 and self.at_lower_limit()):
+            # Stop the motors and tell the code it's not safe to move
             self.motor.stopMotor()
             return False
+
+        # It's safe to move the arm
         return True
 
     def move(self, value: float) -> None:
-        if True:    # self._safety(value)
+        if self._safe_to_move(value):
             self.motor.set(value)
 
     def set_voltage(self, volts: float) -> None:
-        if True:    # self._safety(volts)
+        if self._safe_to_move(volts):
             self.motor.setVoltage(volts)
 
     def stop(self) -> None:
         self.motor.stopMotor()
+
+    def set_safety(self, enabled: bool):
+        """
+        Enables or disables limits.
+        :param enabled: Should limits be enabled?
+        """
+
+        self._safety = enabled
 
     def at_upper_limit(self) -> bool:
         """
@@ -76,3 +100,11 @@ class ArmSubsystem(commands2.SubsystemBase):
         """
 
         return self.encoder.getRate()
+
+    def get_safety(self) -> bool:
+        """
+        Gets if the limits are enabled.
+        :return: Are limits enabled?
+        """
+
+        return self._safety

@@ -27,6 +27,10 @@ class RobotContainer:
         self.drive = DriveSubsystem()
         self.arm = ArmSubsystem()
 
+        # Add subsystems to the dashboard
+        wpilib.SmartDashboard.putData(self.drive)
+        wpilib.SmartDashboard.putData(self.arm)
+
         # Autonomous routines
 
         # Competition autonomous routine
