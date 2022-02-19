@@ -6,6 +6,7 @@ from commands.arm.default_arm import DefaultArm
 from commands.drive.default_drive import DefaultDrive
 from commands.drive.drive_distance import DriveDistance
 from commands.drive.drive_distance_simple import DriveDistanceSimple
+from commands.drive.drive_distance_straight import DriveDistanceStraight
 from commands.drive.timed_drive import TimedDrive
 from commands.drive.turn_to_angle import TurnToAngle
 from constants import DriveConstants, DriverStationConstants
@@ -44,23 +45,14 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5))
         )
 
-        # Auto routine which drives forwards for 5 seconds, then stops
-        self.timed_auto = TimedDrive(self.drive, self.timer, 5, 0.7)
-
-        # Auto routine which drives forwards 2 metres, then stops
-        self.distance_auto = DriveDistance(self.drive, 2)
-
-        # Auto routine which turns to 90 degrees
-        self.angle_auto = TurnToAngle(self.drive, 90)
+        self.drive_straight_auto = DriveDistanceStraight(self.drive, 5, max_speed=0.3, reset_heading=True)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
         self.chooser.setDefaultOption("Competition", self.competition_auto)
-        self.chooser.addOption("Timed Auto", self.timed_auto)
-        self.chooser.addOption("Distance Auto", self.distance_auto)
-        self.chooser.addOption("Angle Auto", self.angle_auto)
+        self.chooser.addOption("Drive Straight", self.drive_straight_auto)
         self.chooser.addOption("Nothing", commands2.InstantCommand())
 
         # Put the chooser on the dashboard
