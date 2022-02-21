@@ -1,6 +1,3 @@
-import typing
-
-
 class Units:
 
     @staticmethod
@@ -10,12 +7,3 @@ class Units:
     @staticmethod
     def inches_to_metres(inches: float):
         return inches * 0.0254
-
-
-class Scheduler:
-    tasks: list[tuple[typing.Callable, float]]
-
-    def schedule_task(self, task: typing.Callable, time: float):
-        self.tasks.append((task, time))
-
-
