@@ -8,7 +8,7 @@ from subsystems.drive_subsystem import DriveSubsystem
 class DriveDistanceStraight(commands2.CommandBase):
 
     def __init__(self, drive: DriveSubsystem, metres: float, follow_angle: float = 0, max_speed: float = 1,
-                 reset_heading: bool = False):
+                 reset_heading: bool = False, finish: bool = True):
         super().__init__()
 
         self.drive = drive
@@ -16,6 +16,10 @@ class DriveDistanceStraight(commands2.CommandBase):
         self.follow = follow_angle
         self.max_speed = max_speed
         self.reset_heading = reset_heading
+        self.finish = finish
+
+        # Reserve the drive subsystem so only this command can use it
+        self.addRequirements([drive])
 
         # PID Controller for driving a certain amount of distance
         self.distance_controller = wpimath.controller.PIDController(0, 0, 0)
@@ -70,4 +74,4 @@ class DriveDistanceStraight(commands2.CommandBase):
 
     def isFinished(self) -> bool:
         # The command has finished once we're at the target distance
-        return self.distance_controller.atSetpoint()
+        return self.finish and self.distance_controller.atSetpoint()

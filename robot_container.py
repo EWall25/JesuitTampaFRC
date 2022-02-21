@@ -45,7 +45,7 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5))
         )
 
-        self.drive_straight_auto = DriveDistanceStraight(self.drive, 5, max_speed=0.3, reset_heading=True)
+        self.drive_straight_auto = DriveDistanceStraight(self.drive, 5, max_speed=0.5, reset_heading=True)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()

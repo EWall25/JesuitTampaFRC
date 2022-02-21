@@ -22,8 +22,14 @@ class LowerArm(commands2.CommandBase):
         return self.arm.at_lower_limit()
 
 
-class ArmLowerHub(commands2.PIDCommand):
-    def __init__(self, arm: ArmSubsystem):
+class SetArmHeight(commands2.PIDCommand):
+    def __init__(self, arm: ArmSubsystem, degrees: float):
+        """
+        Moves the arm to a specified height.
+        :param arm: The arm subsystem
+        :param degrees: The height to move the arm to in degrees
+        """
+
         super().__init__(
             wpimath.controller.PIDController(
                 ArmConstants.ROTATION_P,
@@ -31,28 +37,7 @@ class ArmLowerHub(commands2.PIDCommand):
                 ArmConstants.ROTATION_D
             ),
             arm.get_position,
-            ArmConstants.LOWER_HUB_HEIGHT_DEGREES,
-            arm.set_voltage,
-            [arm]
-        )
-
-        self.controller = self.getController()
-        self.controller.setTolerance(ArmConstants.ROTATION_TOLERANCE_DEGREES)
-
-    def isFinished(self) -> bool:
-        return self.controller.atSetpoint()
-
-
-class ArmRamp(commands2.PIDCommand):
-    def __init__(self, arm: ArmSubsystem):
-        super().__init__(
-            wpimath.controller.PIDController(
-                ArmConstants.ROTATION_P,
-                ArmConstants.ROTATION_I,
-                ArmConstants.ROTATION_D
-            ),
-            arm.get_position,
-            ArmConstants.RAMP_HEIGHT_DEGREES,
+            degrees,
             arm.set_voltage,
             [arm]
         )

@@ -198,6 +198,12 @@ class DriveSubsystem(commands2.SubsystemBase):
     def _set_heading(self, heading: float) -> None:
         self.imu.setYaw(heading)
 
+    def set_left_distance(self, metres: float) -> None:
+        self.l_encoder.setPosition(metres)
+
+    def set_right_distance(self, metres: float) -> None:
+        self.r_encoder.setPosition(metres)
+
     def reset_heading(self) -> None:
         """
         Zeroes the gyroscope's heading.

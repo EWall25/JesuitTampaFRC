@@ -10,17 +10,17 @@ from util import Units
 
 
 class PhysicsEngine:
-
     def __init__(self, physics_controller: PhysicsInterface, robot: StealthTigersRobot):
         self.physics_controller = physics_controller
+        self.robot = robot
 
         # Motors
         self.l_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_LEFT_MOTOR_PORT)
         self.r_motor = wpilib.simulation.PWMSim(DriveConstants.FRONT_RIGHT_MOTOR_PORT)
 
         # Encoders
-        self.l_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.LEFT_ENCODER_PORTS[0])
-        self.r_encoder = wpilib.simulation.EncoderSim.createForChannel(DriveConstants.RIGHT_ENCODER_PORTS[0])
+        self.l_encoder = ctre.CANCoderSimCollection(robot.container.drive.l_encoder)
+        self.r_encoder = ctre.CANCoderSimCollection(robot.container.drive.r_encoder)
 
         # Gyro
         self.sim_imu = ctre.BasePigeonSimCollection(robot.container.drive.imu, False)
@@ -37,19 +37,19 @@ class PhysicsEngine:
 
     def update_sim(self, now, tm_diff):
         l_motor = self.l_motor.getSpeed()
-        r_motor = self.r_motor.getSpeed()
+        r_motor = self.r_motor.getSpeed() * -1
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
         pose = self.physics_controller.move_robot(transform)
 
-        l_position = Units.feet_to_metres(self.drivetrain.l_position)
-        r_position = Units.feet_to_metres(self.drivetrain.r_position)
-        l_velocity = Units.feet_to_metres(self.drivetrain.l_velocity)
-        r_velocity = Units.feet_to_metres(self.drivetrain.r_velocity)
+        l_position = self.drivetrain.l_position
+        r_position = self.drivetrain.r_position
+        l_velocity = int(Units.feet_to_metres(self.drivetrain.l_velocity) / DriveConstants.ENCODER_DISTANCE_PER_PULSE)
+        r_velocity = int(Units.feet_to_metres(self.drivetrain.r_velocity) / DriveConstants.ENCODER_DISTANCE_PER_PULSE)
 
-        self.l_encoder.setDistance(l_position)
-        self.r_encoder.setDistance(r_position)
-        self.l_encoder.setRate(l_velocity)
-        self.r_encoder.setRate(r_velocity)
+        self.robot.container.drive.set_left_distance(l_position)
+        self.robot.container.drive.set_right_distance(r_position)
+        self.l_encoder.setVelocity(l_velocity)
+        self.r_encoder.setVelocity(r_velocity)
 
         self.sim_imu.setRawHeading(pose.rotation().degrees())
