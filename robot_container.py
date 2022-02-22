@@ -2,14 +2,15 @@ import commands2
 import commands2.button
 import wpilib
 
+from commands.arm.arm_position_commands import RaiseArm, LowerArm
 from commands.arm.default_arm import DefaultArm
-from commands.drive.default_drive import DefaultDrive
+from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance import DriveDistance
 from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.drive.drive_distance_straight import DriveDistanceStraight
 from commands.drive.timed_drive import TimedDrive
 from commands.drive.turn_to_angle import TurnToAngle
-from constants import DriveConstants, DriverStationConstants
+from constants import DriveConstants, DriverStationConstants, AutoConstants
 from subsystems.arm_subsystem import ArmSubsystem
 from subsystems.drive_subsystem import DriveSubsystem
 from util import Units
@@ -39,10 +40,12 @@ class RobotContainer:
 
         # Competition autonomous routine
         self.competition_auto = commands2.SequentialCommandGroup(
-            # TODO: Raise Arm
-            # TODO: Lower Arm
+            # Raise the arm to the hub
+            RaiseArm(self.arm).withTimeout(AutoConstants.RAISE_ARM_SECONDS),
+            # Lower the arm, so we can drive away from the hub
+            LowerArm(self.arm).withTimeout(AutoConstants.LOWER_ARM_SECONDS),
             # Drive out of the tarmack
-            DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5))
+            DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5), AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
 
         self.drive_straight_auto = DriveDistanceStraight(self.drive, 5, max_speed=0.5, reset_heading=True)
@@ -62,7 +65,7 @@ class RobotContainer:
 
         # Setup default drive mode
         self.drive.setDefaultCommand(
-            DefaultDrive(
+            ArcadeDrive(
                 self.drive,
                 # Set the forward speed to the left stick's Y axis. If the right bumper is pressed, speed up
                 lambda: -self.stick.getRawAxis(DriverStationConstants.DRIVE_STICK) * (

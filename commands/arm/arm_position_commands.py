@@ -18,8 +18,19 @@ class LowerArm(commands2.CommandBase):
     def end(self, interrupted: bool) -> None:
         self.arm.stop()
 
-    def isFinished(self) -> bool:
-        return self.arm.at_lower_limit()
+
+class RaiseArm(commands2.CommandBase):
+    def __init__(self, arm: ArmSubsystem) -> None:
+        super().__init__()
+
+        self.arm = arm
+        self.addRequirements([arm])
+
+    def execute(self) -> None:
+        self.arm.move(0.3)
+
+    def end(self, interrupted: bool) -> None:
+        self.arm.stop()
 
 
 class SetArmHeight(commands2.PIDCommand):

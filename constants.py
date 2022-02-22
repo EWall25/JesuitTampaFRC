@@ -69,6 +69,8 @@ class ArmConstants:
 
     ROTATION_TOLERANCE_DEGREES = 3
 
+    ARM_SPEED = 0.3
+
 
 class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
@@ -78,4 +80,7 @@ class DriverStationConstants:
 
 
 class AutoConstants:
-    pass
+    DRIVE_AWAY_FROM_HUB_SPEED = 0.5
+
+    RAISE_ARM_SECONDS = 1
+    LOWER_ARM_SECONDS = 1

@@ -22,7 +22,7 @@ class DriveDistanceStraight(commands2.CommandBase):
         self.addRequirements([drive])
 
         # PID Controller for driving a certain amount of distance
-        self.distance_controller = wpimath.controller.PIDController(0, 0, 0)
+        self.distance_controller = wpimath.controller.PIDController(1, 0, 0)
 
         # Tell the distance controller how far we want to drive
         self.distance_controller.setSetpoint(self.goal)
