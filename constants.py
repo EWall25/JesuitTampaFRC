@@ -52,8 +52,9 @@ class DriveConstants:
 
 
 class ArmConstants:
-    MOTOR_1_PORT = 4
-    MOTOR_2_PORT = 5
+    LEFT_MOTOR_PORT = 4
+    RIGHT_MOTOR_PORT = 5
+    WINCH_MOTOR_PORT = 6
 
     ENCODER_PORTS = (2, 3)
 

@@ -10,21 +10,25 @@ class ArmSubsystem(commands2.SubsystemBase):
         super().__init__()
 
         # Arm motor
-        self.motor_1 = wpilib.Spark(ArmConstants.MOTOR_1_PORT)
-        self.motor_2 = wpilib.Spark(ArmConstants.MOTOR_2_PORT)
-        self.motor = wpilib.MotorControllerGroup(self.motor_1, self.motor_2)
+        self.left_motor = wpilib.Spark(ArmConstants.LEFT_MOTOR_PORT)
+        self.right_motor = wpilib.Spark(ArmConstants.RIGHT_MOTOR_PORT)
+        self.arm_motors = wpilib.MotorControllerGroup(self.left_motor, self.right_motor)
+
+        # Winch motor
+        self.winch_motor = wpilib.Spark(ArmConstants.WINCH_MOTOR_PORT)
 
         # Arm encoder
-        self.encoder = wpilib.Encoder(*ArmConstants.ENCODER_PORTS)
+        # self.encoder = wpilib.Encoder(*ArmConstants.ENCODER_PORTS)
 
         # Upper arm limit switch. Trips when the arm has reached the maximum height mechanically possible.
-        self.upper_limit = wpilib.DigitalInput(ArmConstants.UPPER_LIMIT_SWITCH_PORT)
+        # self.upper_limit = wpilib.DigitalInput(ArmConstants.UPPER_LIMIT_SWITCH_PORT)
 
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
-        self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
+        # self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
         self._safety = True
 
+    '''
     def periodic(self) -> None:
         # Put values to the Smart Dashboard
         self._update_dashboard()
@@ -33,8 +37,7 @@ class ArmSubsystem(commands2.SubsystemBase):
         wpilib.SmartDashboard.putBoolean("Safety Enabled", self.get_safety())
         wpilib.SmartDashboard.putBoolean("Upper Limit Pressed", self.at_upper_limit())
         wpilib.SmartDashboard.putBoolean("Lower Limit Pressed", self.at_lower_limit())
-
-    '''
+    
     def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
         builder.setSmartDashboardType("Arm")
         builder.addBooleanProperty("Safety Enabled", self.get_safety, self.set_safety)
@@ -55,22 +58,24 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Check if the arm is hitting its limits
         if (value > 0 and self.at_upper_limit()) or (value < 0 and self.at_lower_limit()):
             # Stop the motors and tell the code it's not safe to move
-            self.motor.stopMotor()
+            self.arm_motors.stopMotor()
             return False
 
         # It's safe to move the arm
         return True
 
     def move(self, value: float) -> None:
-        if self._safe_to_move(value):
-            self.motor.set(value)
+        self.arm_motors.set(value)
+        self.arm_motors.set(value)
+        # TODO: Implement winch
 
     def set_voltage(self, volts: float) -> None:
-        if self._safe_to_move(volts):
-            self.motor.setVoltage(volts)
+        self.arm_motors.setVoltage(volts)
+        self.winch_motor.setVoltage(volts)
+        # TODO: Implement winch
 
     def stop(self) -> None:
-        self.motor.stopMotor()
+        self.arm_motors.stopMotor()
 
     def set_safety(self, enabled: bool):
         """
@@ -86,7 +91,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         :return: Has the upper limit switch been tripped?
         """
 
-        return self.upper_limit.get()
+        # return self.upper_limit.get()
+        raise NotImplementedError
 
     def at_lower_limit(self) -> bool:
         """
@@ -94,7 +100,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         :return: Has the lower limit switch been tripped?
         """
 
-        return self.lower_limit.get()
+        # return self.lower_limit.get()
+        raise NotImplementedError
 
     def get_position(self) -> float:
         """
@@ -102,7 +109,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         :return: The arm motor's rotation in degrees
         """
 
-        return self.encoder.getDistance()
+        # return self.encoder.getDistance()
+        raise NotImplementedError
 
     def get_speed(self) -> float:
         """
@@ -110,7 +118,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         :return: The arm motor's speed in degrees per second
         """
 
-        return self.encoder.getRate()
+        # return self.encoder.getRate()
+        raise NotImplementedError
 
     def get_safety(self) -> bool:
         """
