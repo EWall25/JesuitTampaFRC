@@ -23,8 +23,6 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
         # self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
-        self._safety = True
-
     '''
     def periodic(self) -> None:
         # Put values to the Smart Dashboard
@@ -42,25 +40,6 @@ class ArmSubsystem(commands2.SubsystemBase):
         builder.addBooleanProperty("Lower Limit", self.at_lower_limit, lambda *args: None)
     '''
 
-    def _safe_to_move(self, value: float) -> bool:
-        """
-        Is it safe to drive the motor?
-        :param value: The power/voltage being fed to the motor. Positive should be clockwise.
-        """
-
-        # Assume it's safe to move the arm if safety is disabled
-        if not self._safety:
-            return True
-
-        # Check if the arm is hitting its limits
-        if (value > 0 and self.at_upper_limit()) or (value < 0 and self.at_lower_limit()):
-            # Stop the motors and tell the code it's not safe to move
-            self.arm_motors.stopMotor()
-            return False
-
-        # It's safe to move the arm
-        return True
-
     def move(self, value: float) -> None:
         self.arm_motors.set(value)
 
@@ -69,14 +48,6 @@ class ArmSubsystem(commands2.SubsystemBase):
 
     def stop(self) -> None:
         self.arm_motors.stopMotor()
-
-    def set_safety(self, enabled: bool):
-        """
-        Enables or disables limits.
-        :param enabled: Should limits be enabled?
-        """
-
-        self._safety = enabled
 
     def at_upper_limit(self) -> bool:
         """
@@ -113,11 +84,3 @@ class ArmSubsystem(commands2.SubsystemBase):
 
         # return self.encoder.getRate()
         raise NotImplementedError
-
-    def get_safety(self) -> bool:
-        """
-        Gets if the limits are enabled.
-        :return: Are limits enabled?
-        """
-
-        return self._safety

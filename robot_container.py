@@ -6,11 +6,7 @@ from wpilib import PS4Controller
 from commands.arm.arm_position_commands import RaiseArm, LowerArm
 from commands.arm.default_arm import DefaultArm
 from commands.drive.arcade_drive import ArcadeDrive
-from commands.drive.drive_distance import DriveDistance
 from commands.drive.drive_distance_simple import DriveDistanceSimple
-from commands.drive.drive_distance_straight import DriveDistanceStraight
-from commands.drive.timed_drive import TimedDrive
-from commands.drive.turn_to_angle import TurnToAngle
 from commands.winch.engage_winch import EngageWinch
 from constants import DriveConstants, DriverStationConstants, AutoConstants
 from subsystems.arm_subsystem import ArmSubsystem
@@ -32,9 +28,6 @@ class RobotContainer:
         self.drive = DriveSubsystem()
         self.arm = ArmSubsystem()
         self.winch = WinchSubsystem()
-
-        # Disable arm limits
-        self.arm.set_safety(False)
 
         # Add subsystems to the dashboard
         # wpilib.SmartDashboard.putData(self.drive)
