@@ -84,9 +84,12 @@ class DriverStationConstants:
 
     DRIVE_STICK = 1
     TURN_STICK = 4
+    ARM_UP_AXIS = 3
+    ARM_DOWN_AXIS = 2
 
 
 class AutoConstants:
+    DRIVE_AWAY_FROM_HUB_DISTANCE_FEET = -7.5
     DRIVE_AWAY_FROM_HUB_SPEED = 0.5
 
     RAISE_ARM_SECONDS = 1

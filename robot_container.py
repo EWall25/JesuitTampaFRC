@@ -42,7 +42,8 @@ class RobotContainer:
             # Lower the arm, so we can drive away from the hub
             LowerArm(self.arm).withTimeout(AutoConstants.LOWER_ARM_SECONDS),
             # Drive out of the tarmack
-            DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5), AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
+            DriveDistanceSimple(self.drive, Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
+                                AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
 
         # Auto routine chooser
@@ -73,8 +74,10 @@ class RobotContainer:
         self.arm.setDefaultCommand(
             DefaultArm(
                 self.arm,
-                lambda: self.stick.getRawAxis(3),
-                lambda: self.stick.getRawAxis(2)
+                # The right trigger is "up" and the left trigger is "down"
+                # Subtract the up from the down to get the rotation power
+                lambda: self.stick.getRawAxis(DriverStationConstants.ARM_UP_AXIS) -
+                self.stick.getRawAxis(DriverStationConstants.ARM_DOWN_AXIS)
             )
         )
 

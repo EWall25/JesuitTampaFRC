@@ -9,23 +9,20 @@ class DefaultArm(commands2.CommandBase):
 
     def __init__(
             self, arm: ArmSubsystem,
-            up: typing.Callable[[], float],
-            down: typing.Callable[[], float]
+            rotation: typing.Callable[[], float]
     ) -> None:
         """
         Drive the arm with joysticks/triggers.
         :param arm: The arm subsystem
-        :param up: A function returning the intended upward speed. Ranges 0 to 1.
-        :param down: A function returning the intended downward speed. Ranges 0 to 1.
+        :param rotation: A function returning the power to the arm motor. Ranges from -1 to 1.
         """
 
         super().__init__()
 
         self.arm = arm
-        self.up = up
-        self.down = down
+        self.rotation = rotation
 
         self.addRequirements([arm])
 
     def execute(self) -> None:
-        self.arm.move(self.up() - self.down())
+        self.arm.move(self.rotation())
