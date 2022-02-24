@@ -14,9 +14,6 @@ class ArmSubsystem(commands2.SubsystemBase):
         self.right_motor = wpilib.Spark(ArmConstants.RIGHT_MOTOR_PORT)
         self.arm_motors = wpilib.MotorControllerGroup(self.left_motor, self.right_motor)
 
-        # Winch motor
-        self.winch_motor = wpilib.Spark(ArmConstants.WINCH_MOTOR_PORT)
-
         # Arm encoder
         # self.encoder = wpilib.Encoder(*ArmConstants.ENCODER_PORTS)
 
@@ -66,13 +63,9 @@ class ArmSubsystem(commands2.SubsystemBase):
 
     def move(self, value: float) -> None:
         self.arm_motors.set(value)
-        self.arm_motors.set(value)
-        # TODO: Implement winch
 
     def set_voltage(self, volts: float) -> None:
         self.arm_motors.setVoltage(volts)
-        self.winch_motor.setVoltage(volts)
-        # TODO: Implement winch
 
     def stop(self) -> None:
         self.arm_motors.stopMotor()

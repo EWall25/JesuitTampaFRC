@@ -1,6 +1,7 @@
 import commands2
 import commands2.button
 import wpilib
+from wpilib import PS4Controller
 
 from commands.arm.arm_position_commands import RaiseArm, LowerArm
 from commands.arm.default_arm import DefaultArm
@@ -10,9 +11,11 @@ from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.drive.drive_distance_straight import DriveDistanceStraight
 from commands.drive.timed_drive import TimedDrive
 from commands.drive.turn_to_angle import TurnToAngle
+from commands.winch.engage_winch import EngageWinch
 from constants import DriveConstants, DriverStationConstants, AutoConstants
 from subsystems.arm_subsystem import ArmSubsystem
 from subsystems.drive_subsystem import DriveSubsystem
+from subsystems.winch_subsystem import WinchSubsystem
 from util import Units
 
 
@@ -28,6 +31,7 @@ class RobotContainer:
         # Subsystems
         self.drive = DriveSubsystem()
         self.arm = ArmSubsystem()
+        self.winch = WinchSubsystem()
 
         # Disable arm limits
         self.arm.set_safety(False)
@@ -48,15 +52,11 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(-7.5), AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
 
-        self.drive_straight_auto = DriveDistanceStraight(self.drive, 5, max_speed=0.5, reset_heading=True)
-
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
         self.chooser.setDefaultOption("Competition", self.competition_auto)
-        self.chooser.addOption("Drive Straight", self.drive_straight_auto)
-        self.chooser.addOption("Nothing", commands2.InstantCommand())
 
         # Put the chooser on the dashboard
         wpilib.SmartDashboard.putData("Autonomous", self.chooser)
@@ -86,7 +86,10 @@ class RobotContainer:
         )
 
     def configure_button_bindings(self) -> None:
-        pass
+        # Engage the winch when the top button is pressed
+        commands2.button.JoystickButton(self.stick, PS4Controller.Button.kTriangle).whenPressed(
+            EngageWinch(self.winch)
+        )
 
     def get_autonomous_command(self) -> commands2.Command:
         return self.chooser.getSelected()

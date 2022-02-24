@@ -54,7 +54,6 @@ class DriveConstants:
 class ArmConstants:
     LEFT_MOTOR_PORT = 4
     RIGHT_MOTOR_PORT = 5
-    WINCH_MOTOR_PORT = 6
 
     ENCODER_PORTS = (2, 3)
 
@@ -71,6 +70,13 @@ class ArmConstants:
     ROTATION_TOLERANCE_DEGREES = 3
 
     ARM_SPEED = 0.3
+
+
+class WinchConstants:
+    WINCH_MOTOR_PORT = 6
+
+    WINCH_DRIVE_TIME_SECONDS = 1
+    WINCH_DRIVE_POWER = 0.5
 
 
 class DriverStationConstants:
