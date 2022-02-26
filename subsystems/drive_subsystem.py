@@ -145,8 +145,10 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # getYawPitchRoll returns an error code and an array containing the yaw, pitch and roll
         # Get that array then return the yaw
-        ypr = self.imu.getYawPitchRoll()[1]
-        return ypr[0]
+        # TODO Plug in gyro
+        return 0
+        # ypr = self.imu.getYawPitchRoll()[1]
+        # return ypr[0]
 
     def get_left_distance(self) -> float:
         """
@@ -154,7 +156,8 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The distance travelled by the left wheel in metres.
         """
 
-        return self.l_encoder.getPosition()
+        return 0
+        # return self.l_encoder.getPosition()
 
     def get_right_distance(self) -> float:
         """
@@ -162,13 +165,16 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The distance travelled by the right wheel in metres.
         """
 
-        return self.r_encoder.getPosition()
+        return 0
+        # return self.r_encoder.getPosition()
 
     def get_left_velocity(self) -> float:
-        return self.l_encoder.getVelocity()
+        return 0
+        # return self.l_encoder.getVelocity()
 
     def get_right_velocity(self) -> float:
-        return self.r_encoder.getVelocity()
+        return 0
+        # return self.r_encoder.getVelocity()
 
     def get_average_distance(self) -> float:
         """

@@ -41,6 +41,8 @@ class ArmSubsystem(commands2.SubsystemBase):
     '''
 
     def move(self, value: float) -> None:
+        # print(value)
+        # self.arm_motors.setVoltage(value * 7)
         self.arm_motors.set(value)
 
     def set_voltage(self, volts: float) -> None:

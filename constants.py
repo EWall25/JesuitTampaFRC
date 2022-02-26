@@ -1,5 +1,7 @@
 from math import pi
 
+from wpilib import PS4Controller
+
 
 class DriveConstants:
     FRONT_RIGHT_MOTOR_PORT = 0
@@ -8,7 +10,7 @@ class DriveConstants:
     BACK_LEFT_MOTOR_PORT = 3
 
     LEFT_MOTORS_INVERTED = False
-    RIGHT_MOTORS_INVERTED = False
+    RIGHT_MOTORS_INVERTED = True
 
     TELEOP_DEFAULT_DRIVE_SPEED = 0.5
     TELEOP_BOOST_DRIVE_SPEED = 1
@@ -81,11 +83,20 @@ class WinchConstants:
 
 class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
+    ARM_CONTROLLER_PORT = 1
 
     DRIVE_STICK = 1
     TURN_STICK = 4
-    ARM_UP_AXIS = 3
-    ARM_DOWN_AXIS = 2
+    ARM_AXIS = 1
+    WINCH_BUTTON = PS4Controller.Button.kTriangle
+    HUMAN_ELEMENT_BUTTON = PS4Controller.Button.kSquare
+    HUB_BUTTON = PS4Controller.Button.kCross
+    LOCK_BUTTON = PS4Controller.Button.kCircle
+    # ARM_UP_AXIS = 3
+    # ARM_DOWN_AXIS = 2
+
+    HUMAN_ELEMENT_HEIGHT_SECONDS = 1
+    HUB_HEIGHT_SECONDS = 1
 
 
 class AutoConstants:
