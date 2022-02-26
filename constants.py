@@ -62,8 +62,8 @@ class ArmConstants:
     UPPER_LIMIT_SWITCH_PORT = 6
     LOWER_LIMIT_SWITCH_PORT = 7
 
-    LOWER_HUB_HEIGHT_DEGREES = 1
-    RAMP_HEIGHT_DEGREES = 1
+    LOWER_HUB_HEIGHT_PWM = 0
+    RAMP_HEIGHT_PWM = 0
 
     ROTATION_P = 1
     ROTATION_I = 0
@@ -71,7 +71,7 @@ class ArmConstants:
 
     ROTATION_TOLERANCE_DEGREES = 3
 
-    ARM_SPEED = 0.3
+    ARM_SPEED = 0.01
 
 
 class WinchConstants:
@@ -85,18 +85,15 @@ class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
     ARM_CONTROLLER_PORT = 1
 
-    DRIVE_STICK = 1
-    TURN_STICK = 4
-    ARM_AXIS = 1
-    WINCH_BUTTON = PS4Controller.Button.kTriangle
-    HUMAN_ELEMENT_BUTTON = PS4Controller.Button.kSquare
-    HUB_BUTTON = PS4Controller.Button.kCross
-    LOCK_BUTTON = PS4Controller.Button.kCircle
-    # ARM_UP_AXIS = 3
-    # ARM_DOWN_AXIS = 2
+    DRIVE_STICK = 1             # Left Stick
+    TURN_STICK = 4              # Right Stick
+    SPEED_TOGGLE_BUTTON = 6     # Right Bumper
 
-    HUMAN_ELEMENT_HEIGHT_SECONDS = 1
-    HUB_HEIGHT_SECONDS = 1
+    ARM_AXIS = 1                # Left Stick
+    WINCH_BUTTON = 4            # Y Button
+    RAMP_BUTTON = 3             # X Button
+    LOWER_HUB_BUTTON = 1        # A Button
+    ARM_MODE_BUTTON = 8         # Start Button
 
 
 class AutoConstants:

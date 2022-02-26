@@ -1,3 +1,13 @@
+def clamp(number: float, min_value: float, max_value: float) -> float:
+    return max(min(number, max_value), min_value)
+
+
+def deadband(number: float, deadband: float) -> float:
+    if abs(number) < deadband:
+        return 0
+    return number
+
+
 class Units:
 
     @staticmethod

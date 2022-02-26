@@ -2,10 +2,11 @@ import typing
 
 import commands2
 
+from constants import ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
 
 
-class DefaultArm(commands2.CommandBase):
+class DirectArm(commands2.CommandBase):
 
     def __init__(
             self, arm: ArmSubsystem,
@@ -14,7 +15,7 @@ class DefaultArm(commands2.CommandBase):
         """
         Drive the arm with joysticks/triggers.
         :param arm: The arm subsystem
-        :param movement: A function returning how much should be added to the arm's height.
+        :param movement: A function returning the robot arm's intended speed.
         """
 
         super().__init__()
@@ -24,5 +25,8 @@ class DefaultArm(commands2.CommandBase):
 
         self.addRequirements([arm])
 
+    def initialize(self) -> None:
+        print("lord help us")
+
     def execute(self) -> None:
-        self.arm.move(self.movement())
+        self.arm.set_height(self.movement())
