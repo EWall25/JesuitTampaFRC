@@ -8,6 +8,7 @@ from commands.arm.direct_arm import DirectArm
 from commands.arm.set_arm_height import SetArmHeight
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
+from commands.winch.default_winch import DefaultWinch
 from commands.winch.engage_winch import EngageWinch
 from constants import DriveConstants, DriverStationConstants, AutoConstants, ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
@@ -85,11 +86,18 @@ class RobotContainer:
             )
         )
 
+        self.winch.setDefaultCommand(
+            DefaultWinch(
+                self.winch,
+                lambda: -self.arm_stick.getRightY() * 0.1
+            )
+        )
+
     def configure_button_bindings(self) -> None:
         # Engage the winch when the top button is pressed
-        commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
-            EngageWinch(self.winch)
-        )
+        #commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
+        #    EngageWinch(self.winch)
+        #)
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.RAMP_BUTTON).whenPressed(
             SetArmHeight(self.arm, ArmConstants.RAMP_HEIGHT_PWM)
         )

@@ -30,6 +30,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Drive the motor to keep the arm at a specified height
         self.arm_motors.set(self.speed)
 
+        wpilib.SmartDashboard.putNumber("Speed/Height", self.get_height())
+
     '''
     def _update_dashboard(self):
         wpilib.SmartDashboard.putBoolean("Safety Enabled", self.get_safety())
@@ -50,41 +52,8 @@ class ArmSubsystem(commands2.SubsystemBase):
     def set_height(self, speed: float) -> None:
         self.speed = speed
 
+    def get_height(self) -> float:
+        return self.speed
+
     def drop(self) -> None:
         self.speed = 0
-
-    def at_upper_limit(self) -> bool:
-        """
-        Can the arm move further upwards?
-        :return: Has the upper limit switch been tripped?
-        """
-
-        # return self.upper_limit.get()
-        raise NotImplementedError
-
-    def at_lower_limit(self) -> bool:
-        """
-        Can the arm move further downwards?
-        :return: Has the lower limit switch been tripped?
-        """
-
-        # return self.lower_limit.get()
-        raise NotImplementedError
-
-    def get_position(self) -> float:
-        """
-        Gets the arm's rotation.
-        :return: The arm motor's rotation in degrees
-        """
-
-        # return self.encoder.getDistance()
-        raise NotImplementedError
-
-    def get_speed(self) -> float:
-        """
-        Gets the arm's speed.
-        :return: The arm motor's speed in degrees per second
-        """
-
-        # return self.encoder.getRate()
-        raise NotImplementedError

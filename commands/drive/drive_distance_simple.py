@@ -7,6 +7,12 @@ from subsystems.drive_subsystem import DriveSubsystem
 class DriveDistanceSimple(commands2.CommandBase):
 
     def __init__(self, drive: DriveSubsystem, metres: float, speed: float = 0.5) -> None:
+        """
+        Drive the robot a distance.
+        :param drive: The drivetrain subsystem
+        :param metres: The distance to drive the robot
+        :param speed: The drive speed. Ranges 0-1
+        """
         super().__init__()
 
         self.drive = drive

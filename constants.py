@@ -1,7 +1,5 @@
 from math import pi
 
-from wpilib import PS4Controller
-
 
 class DriveConstants:
     FRONT_RIGHT_MOTOR_PORT = 0
@@ -20,8 +18,23 @@ class DriveConstants:
     # For example, a value of 2 will make the robot accelerate to full power in 0.5 seconds
     TELEOP_DRIVE_ACCELERATION_PER_SECOND = 2
 
+    DRIVE_TOLERANCE_METRES = 0.12
+    TURN_TOLERANCE_DEGREES = 3
+
+    LEFT_ENCODER_PORT = 1   # TODO: Find correct encoder ports
+    RIGHT_ENCODER_PORT = 2
+    # LEFT_ENCODER_PORTS = (0, 1)
+    # RIGHT_ENCODER_PORTS = (2, 3)
+
+    ENCODER_CPR = 4096
+    WHEEL_DIAMETER_METRES = 0.1524
+    ENCODER_DISTANCE_PER_PULSE = WHEEL_DIAMETER_METRES * pi / ENCODER_CPR
+
+    IMU_PORT = 1
+
     WHEELBASE_METRES = 21.8625 / 39.37
 
+    '''
     S_VOLTS = 1
     V_VOLT_SECONDS_PER_METRE = 0.5
     A_VOLT_SECONDS_SQUARED_PER_METRE = 0
@@ -37,48 +50,29 @@ class DriveConstants:
     DRIVE_METRES_P = 1
     DRIVE_METRES_I = 0
     DRIVE_METRES_D = 0
-
-    DRIVE_TOLERANCE_METRES = 0.12
-    TURN_TOLERANCE_DEGREES = 3
-
-    LEFT_ENCODER_PORT = 2
-    RIGHT_ENCODER_PORT = 3
-    # LEFT_ENCODER_PORTS = (0, 1)
-    # RIGHT_ENCODER_PORTS = (2, 3)
-
-    ENCODER_CPR = 360
-    WHEEL_DIAMETER_METRES = 0.1524
-    ENCODER_DISTANCE_PER_PULSE = WHEEL_DIAMETER_METRES * pi / ENCODER_CPR
-
-    IMU_PORT = 1
+    '''
 
 
 class ArmConstants:
     LEFT_MOTOR_PORT = 4
     RIGHT_MOTOR_PORT = 5
 
-    ENCODER_PORTS = (2, 3)
+    # ENCODER_PORTS = (2, 3)
 
-    UPPER_LIMIT_SWITCH_PORT = 6
-    LOWER_LIMIT_SWITCH_PORT = 7
-
-    LOWER_HUB_HEIGHT_PWM = 0
-    RAMP_HEIGHT_PWM = 0
-
-    ROTATION_P = 1
-    ROTATION_I = 0
-    ROTATION_D = 0
-
-    ROTATION_TOLERANCE_DEGREES = 3
+    # UPPER_LIMIT_SWITCH_PORT = 6
+    # LOWER_LIMIT_SWITCH_PORT = 7
 
     ARM_SPEED = 0.01
+
+    LOWER_HUB_HEIGHT_PWM = 0.6
+    RAMP_HEIGHT_PWM = 0.65
 
 
 class WinchConstants:
     WINCH_MOTOR_PORT = 6
 
     WINCH_DRIVE_TIME_SECONDS = 1
-    WINCH_DRIVE_POWER = 0.5
+    WINCH_DRIVE_POWER = 0.3
 
 
 class DriverStationConstants:
@@ -99,6 +93,3 @@ class DriverStationConstants:
 class AutoConstants:
     DRIVE_AWAY_FROM_HUB_DISTANCE_FEET = -7.5
     DRIVE_AWAY_FROM_HUB_SPEED = 0.5
-
-    RAISE_ARM_SECONDS = 1
-    LOWER_ARM_SECONDS = 1

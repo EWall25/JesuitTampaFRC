@@ -18,7 +18,6 @@ class LockArm(commands2.CommandBase):
 
     def initialize(self) -> None:
         self.value = self.holding_value()
-        print("Holding")
 
     def execute(self) -> None:
-        self.arm.move(self.value)
+        self.arm.set_height(self.value)

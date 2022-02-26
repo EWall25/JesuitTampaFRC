@@ -1,6 +1,7 @@
 import typing
 
 import commands2
+import wpilib
 
 from constants import ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
@@ -13,7 +14,7 @@ class DirectArm(commands2.CommandBase):
             movement: typing.Callable[[], float]
     ) -> None:
         """
-        Drive the arm with joysticks/triggers.
+        Drive the arm with joysticks/triggers, directly setting the arm's speed.
         :param arm: The arm subsystem
         :param movement: A function returning the robot arm's intended speed.
         """
@@ -26,7 +27,9 @@ class DirectArm(commands2.CommandBase):
         self.addRequirements([arm])
 
     def initialize(self) -> None:
-        print("lord help us")
+        # Tell the driver which mode the arm is being controlled with
+        wpilib.SmartDashboard.putString("Arm Mode", "Current")
 
     def execute(self) -> None:
+        # Set the speed of the arm motor
         self.arm.set_height(self.movement())
