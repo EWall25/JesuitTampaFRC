@@ -76,28 +76,33 @@ class RobotContainer:
 
         # Setup default arm mode
         self.arm.setDefaultCommand(
-            DefaultArm(
+            DirectArm(
                 self.arm,
                 # Use a stick to control arm movement
                 lambda: util.deadband(
                     -self.arm_stick.getRawAxis(DriverStationConstants.ARM_AXIS),
                     0.1
-                ) * ArmConstants.ARM_SPEED
+                )
             )
         )
 
         self.winch.setDefaultCommand(
             DefaultWinch(
                 self.winch,
-                lambda: -self.arm_stick.getRightY() * 0.1
+                lambda: -self.arm_stick.getRightY() * 0.3
             )
         )
 
     def configure_button_bindings(self) -> None:
+        """
+        Sets up joystick buttons.
+        """
+
         # Engage the winch when the top button is pressed
-        #commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
-        #    EngageWinch(self.winch)
-        #)
+        commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
+            EngageWinch(self.winch)
+        )
+        '''
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.RAMP_BUTTON).whenPressed(
             SetArmHeight(self.arm, ArmConstants.RAMP_HEIGHT_PWM)
         )
@@ -113,6 +118,7 @@ class RobotContainer:
                 )
             )
         )
+        '''
 
     def get_autonomous_command(self) -> commands2.Command:
         return self.chooser.getSelected()

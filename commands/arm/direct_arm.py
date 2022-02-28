@@ -2,6 +2,7 @@ import typing
 
 import commands2
 import wpilib
+import wpimath.filter
 
 from constants import ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
@@ -24,6 +25,8 @@ class DirectArm(commands2.CommandBase):
         self.arm = arm
         self.movement = movement
 
+        self.filter = wpimath.filter.SlewRateLimiter(0.5)
+
         self.addRequirements([arm])
 
     def initialize(self) -> None:
@@ -32,4 +35,5 @@ class DirectArm(commands2.CommandBase):
 
     def execute(self) -> None:
         # Set the speed of the arm motor
-        self.arm.set_height(self.movement())
+        movement = self.filter.calculate(self.movement())
+        self.arm.set_height(movement)
