@@ -36,4 +36,4 @@ class DirectArm(commands2.CommandBase):
     def execute(self) -> None:
         # Set the speed of the arm motor
         movement = self.filter.calculate(self.movement())
-        self.arm.set_height(movement)
+        self.arm.set_speed(movement)

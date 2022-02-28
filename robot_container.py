@@ -107,6 +107,12 @@ class RobotContainer:
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.LOCK_ARM_BUTTON).toggleWhenPressed(
             LockArm(self.arm)
         )
+        commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.ARM_MODE_BUTTON).toggleWhenPressed(
+            commands2.FunctionalCommand(
+                lambda: self.arm.set_safety(not self.arm.is_safety_enabled()),
+                lambda: self.winch.set_enabled(not self.winch.is_enabled())
+            )
+        )
         '''
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.RAMP_BUTTON).whenPressed(
             SetArmHeight(self.arm, ArmConstants.RAMP_HEIGHT_PWM)

@@ -16,7 +16,7 @@ class LockArm(commands2.CommandBase):
         self.addRequirements([arm])
 
     def initialize(self) -> None:
-        self.power = self.arm.get_height()
+        self.power = self.arm.get_speed()
 
     def execute(self) -> None:
-        self.arm.set_height(self.power)
+        self.arm.set_speed(self.power)

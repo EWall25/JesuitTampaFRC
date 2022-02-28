@@ -13,4 +13,4 @@ class SetArmHeight(commands2.InstantCommand):
         """
 
         # TODO: Gradually decrease height
-        super().__init__(lambda: arm.set_height(height), [arm])
+        super().__init__(lambda: arm.set_speed(height), [arm])

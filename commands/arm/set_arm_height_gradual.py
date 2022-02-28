@@ -22,11 +22,11 @@ class SetArmHeight(commands2.CommandBase):
         self.addRequirements([arm])
 
     def initialize(self) -> None:
-        self.filter.reset(self.arm.get_height())
+        self.filter.reset(self.arm.get_speed())
 
     def execute(self) -> None:
         movement = self.filter.calculate(self.target)
-        self.arm.set_height(movement)
+        self.arm.set_speed(movement)
 
     def isFinished(self) -> bool:
-        return self.arm.get_height() == self.target
+        return self.arm.get_speed() == self.target

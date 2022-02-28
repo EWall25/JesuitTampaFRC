@@ -9,6 +9,8 @@ class WinchSubsystem(commands2.SubsystemBase):
     def __init__(self) -> None:
         super().__init__()
 
+        self.enabled = True
+
         # Winch motor
         self.motor = wpilib.Spark(WinchConstants.WINCH_MOTOR_PORT)
 
@@ -17,8 +19,8 @@ class WinchSubsystem(commands2.SubsystemBase):
         Pull/release the winch chord.
         :param power: The power to drive the motor at
         """
-
-        self.motor.set(power)
+        if self.enabled:
+            self.motor.set(power)
 
     def stop(self) -> None:
         """
@@ -26,3 +28,9 @@ class WinchSubsystem(commands2.SubsystemBase):
         """
 
         self.motor.stopMotor()
+
+    def set_enabled(self, enabled: bool) -> None:
+        self.enabled = enabled
+
+    def is_enabled(self) -> bool:
+        return self.enabled
