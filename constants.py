@@ -87,6 +87,7 @@ class DriverStationConstants:
     WINCH_BUTTON = 4            # Y Button
     RAMP_BUTTON = 3             # X Button
     LOWER_HUB_BUTTON = 1        # A Button
+    LOCK_ARM_BUTTON = 2         # B Button
     ARM_MODE_BUTTON = 8         # Start Button
 
 

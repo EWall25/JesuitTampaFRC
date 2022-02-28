@@ -7,17 +7,16 @@ from subsystems.arm_subsystem import ArmSubsystem
 
 class LockArm(commands2.CommandBase):
 
-    def __init__(self, arm: ArmSubsystem, holding_value: typing.Callable[[], float]):
+    def __init__(self, arm: ArmSubsystem):
         super().__init__()
 
         self.arm = arm
-        self.holding_value = holding_value
-        self.value = 0
+        self.power = 0
 
         self.addRequirements([arm])
 
     def initialize(self) -> None:
-        self.value = self.holding_value()
+        self.power = self.arm.get_height()
 
     def execute(self) -> None:
-        self.arm.set_height(self.value)
+        self.arm.set_height(self.power)

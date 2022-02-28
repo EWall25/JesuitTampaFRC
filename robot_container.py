@@ -5,6 +5,7 @@ import wpilib
 import util
 from commands.arm.default_arm import DefaultArm
 from commands.arm.direct_arm import DirectArm
+from commands.arm.lock_arm import LockArm
 from commands.arm.set_arm_height import SetArmHeight
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
@@ -101,6 +102,10 @@ class RobotContainer:
         # Engage the winch when the top button is pressed
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
             EngageWinch(self.winch)
+        )
+        # Lock the arm in place
+        commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.LOCK_ARM_BUTTON).toggleWhenPressed(
+            LockArm(self.arm)
         )
         '''
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.RAMP_BUTTON).whenPressed(
