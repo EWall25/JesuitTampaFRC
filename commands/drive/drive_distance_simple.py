@@ -27,6 +27,7 @@ class DriveDistanceSimple(commands2.CommandBase):
     def execute(self) -> None:
         distance = self.drive.get_average_distance()
         drive_forward = self.goal > distance
+        print(f"{distance} :: {drive_forward}")
         if drive_forward:
             self.drive.arcade_drive(self.speed, 0)
         else:

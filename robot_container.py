@@ -3,10 +3,10 @@ import commands2.button
 import wpilib
 
 import util
-from commands.arm.default_arm import DefaultArm
-from commands.arm.direct_arm import DirectArm
+from commands.arm.height_control_arm import HeightControlArm
+from commands.arm.power_control_arm import PowerControlArm
 from commands.arm.lock_arm import LockArm
-from commands.arm.set_arm_height import SetArmHeight
+from commands.arm.set_arm_height import SetArmSpeed
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.winch.default_winch import DefaultWinch
@@ -35,6 +35,10 @@ class RobotContainer:
         self.arm = ArmSubsystem()
         self.winch = WinchSubsystem()
 
+        # By default, the winch should be non-operable. It should only function under
+        # the hangar
+        self.winch.set_enabled(False)
+
         # Add subsystems to the dashboard
         # wpilib.SmartDashboard.putData(self.drive)
         # wpilib.SmartDashboard.putData(self.arm)
@@ -43,8 +47,6 @@ class RobotContainer:
 
         # Competition autonomous routine
         self.competition_auto = commands2.SequentialCommandGroup(
-            # Raise the arm to the hub
-            SetArmHeight(self.arm, ArmConstants.LOWER_HUB_HEIGHT_PWM),
             # Drive out of the tarmack
             DriveDistanceSimple(self.drive, Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
@@ -66,7 +68,7 @@ class RobotContainer:
             ArcadeDrive(
                 self.drive,
                 # Set the forward speed to the left stick's Y axis. If the right bumper is pressed, speed up
-                lambda: self.driver_stick.getRawAxis(DriverStationConstants.DRIVE_STICK) * (
+                lambda: -self.driver_stick.getRawAxis(DriverStationConstants.DRIVE_STICK) * (
                     DriveConstants.TELEOP_BOOST_DRIVE_SPEED
                     if self.driver_stick.getRawButton(DriverStationConstants.SPEED_TOGGLE_BUTTON)
                     else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
@@ -77,7 +79,7 @@ class RobotContainer:
 
         # Setup default arm mode
         self.arm.setDefaultCommand(
-            DirectArm(
+            PowerControlArm(
                 self.arm,
                 # Use a stick to control arm movement
                 lambda: util.deadband(
@@ -107,10 +109,17 @@ class RobotContainer:
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.LOCK_ARM_BUTTON).toggleWhenPressed(
             LockArm(self.arm)
         )
+        # Switch between "modes" for normal match play and climbing
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.ARM_MODE_BUTTON).toggleWhenPressed(
-            commands2.FunctionalCommand(
-                lambda: self.arm.set_safety(not self.arm.is_safety_enabled()),
-                lambda: self.winch.set_enabled(not self.winch.is_enabled())
+            commands2.ParallelCommandGroup(
+                commands2.InstantCommand(
+                    lambda: self.arm.set_safety(not self.arm.is_safety_enabled()),
+                    [self.arm]
+                ),
+                commands2.InstantCommand(
+                    lambda: self.winch.set_enabled(not self.winch.is_enabled()),
+                    [self.winch]
+                )
             )
         )
         '''

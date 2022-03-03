@@ -13,6 +13,13 @@ class WinchSubsystem(commands2.SubsystemBase):
 
         # Winch motor
         self.motor = wpilib.Spark(WinchConstants.WINCH_MOTOR_PORT)
+        self.motor.setInverted(WinchConstants.MOTOR_INVERTED)
+
+    def periodic(self) -> None:
+        self._update_dashboard()
+
+    def _update_dashboard(self):
+        wpilib.SmartDashboard.putBoolean("Winch Operable?", self.is_enabled())
 
     def drive(self, power: float = WinchConstants.WINCH_DRIVE_POWER) -> None:
         """

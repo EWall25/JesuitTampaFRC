@@ -5,7 +5,7 @@ from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics.units import units
 
 from robot import StealthTigersRobot
-from constants import DriveConstants
+from constants import DriveConstants, ArmConstants
 from util import Units
 
 
@@ -24,6 +24,10 @@ class PhysicsEngine:
 
         # Gyro
         self.sim_imu = ctre.BasePigeonSimCollection(robot.container.drive.imu, False)
+
+        # Limit switches
+        self.upper_limit = wpilib.simulation.DIOSim(ArmConstants.UPPER_LIMIT_SWITCH_PORT)
+        self.upper_limit.setValue(False)
 
         # Drivetrain (arbitrary values used)
         self.drivetrain = tankmodel.TankModel.theory(

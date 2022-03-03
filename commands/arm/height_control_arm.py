@@ -6,7 +6,7 @@ import wpilib
 from subsystems.arm_subsystem import ArmSubsystem
 
 
-class DefaultArm(commands2.CommandBase):
+class HeightControlArm(commands2.CommandBase):
 
     def __init__(
             self, arm: ArmSubsystem,

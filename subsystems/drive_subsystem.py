@@ -50,6 +50,10 @@ class DriveSubsystem(commands2.SubsystemBase):
         # self.l_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
         # self.r_encoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE)
 
+        # Configure encoder directions to match the motors'
+        self.l_encoder.configSensorDirection(DriveConstants.LEFT_ENCODER_INVERTED)
+        self.r_encoder.configSensorDirection(DriveConstants.RIGHT_ENCODER_INVERTED)
+
         # Put encoders to Smart Dashboard
         # wpilib.SmartDashboard.putData("Left Encoder", self.l_encoder)
         # wpilib.SmartDashboard.putData("Right Encoder", self.r_encoder)
@@ -89,7 +93,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.pose = self.odometry.update(heading, l_distance, r_distance)
 
     def _update_dashboard(self):
-        wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
+        # wpilib.SmartDashboard.putNumber("Heading", self.get_heading())
         wpilib.SmartDashboard.putNumber("Left Distance", self.get_left_distance())
         wpilib.SmartDashboard.putNumber("Left Velocity", self.get_left_velocity())
         wpilib.SmartDashboard.putNumber("Right Distance", self.get_right_distance())
@@ -156,8 +160,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The distance travelled by the left wheel in metres.
         """
 
-        return 0
-        # return self.l_encoder.getPosition()
+        return self.l_encoder.getPosition()
 
     def get_right_distance(self) -> float:
         """
@@ -165,16 +168,13 @@ class DriveSubsystem(commands2.SubsystemBase):
         :return: The distance travelled by the right wheel in metres.
         """
 
-        return 0
-        # return self.r_encoder.getPosition()
+        return self.r_encoder.getPosition()
 
     def get_left_velocity(self) -> float:
-        return 0
-        # return self.l_encoder.getVelocity()
+        return self.l_encoder.getVelocity()
 
     def get_right_velocity(self) -> float:
-        return 0
-        # return self.r_encoder.getVelocity()
+        return self.r_encoder.getVelocity()
 
     def get_average_distance(self) -> float:
         """

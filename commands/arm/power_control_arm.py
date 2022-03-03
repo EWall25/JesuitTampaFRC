@@ -8,7 +8,7 @@ from constants import ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
 
 
-class DirectArm(commands2.CommandBase):
+class PowerControlArm(commands2.CommandBase):
 
     def __init__(
             self, arm: ArmSubsystem,
@@ -25,15 +25,12 @@ class DirectArm(commands2.CommandBase):
         self.arm = arm
         self.movement = movement
 
-        self.filter = wpimath.filter.SlewRateLimiter(0.5)
+        # self.filter = wpimath.filter.SlewRateLimiter(ArmConstants.ARM_RATE_LIMIT_PER_SECOND)
 
         self.addRequirements([arm])
 
-    def initialize(self) -> None:
-        # Tell the driver which mode the arm is being controlled with
-        wpilib.SmartDashboard.putString("Arm Mode", "Current")
-
     def execute(self) -> None:
         # Set the speed of the arm motor
-        movement = self.filter.calculate(self.movement())
+        # movement = self.filter.calculate(self.movement())
+        movement = self.movement()
         self.arm.set_speed(movement)
