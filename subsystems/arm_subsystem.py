@@ -36,8 +36,10 @@ class ArmSubsystem(commands2.SubsystemBase):
         wpilib.SmartDashboard.putBoolean("Upper Limit Pressed?", self.upper_limit_pressed())
 
         # Gradually decrease speed to zero to avoid the arm slamming down
+        '''
         if self.speed == 0:
             self.speed = max(self.last_speed - 0.01, 0)
+        '''
 
         # Stop the motor if we try to exceed the limits
         if not self._safe_to_drive(self.speed):

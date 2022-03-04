@@ -41,7 +41,7 @@ class PhysicsEngine:
 
     def update_sim(self, now, tm_diff):
         l_motor = self.l_motor.getSpeed()
-        r_motor = self.r_motor.getSpeed() * -1
+        r_motor = self.r_motor.getSpeed()
 
         transform = self.drivetrain.calculate(l_motor, r_motor, tm_diff)
         pose = self.physics_controller.move_robot(transform)

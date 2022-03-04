@@ -24,13 +24,22 @@ class PowerControlArm(commands2.CommandBase):
 
         self.arm = arm
         self.movement = movement
-
-        # self.filter = wpimath.filter.SlewRateLimiter(ArmConstants.ARM_RATE_LIMIT_PER_SECOND)
+        self.filter = wpimath.filter.SlewRateLimiter(.25)
 
         self.addRequirements([arm])
 
     def execute(self) -> None:
-        # Set the speed of the arm motor
-        # movement = self.filter.calculate(self.movement())
-        movement = self.movement()
-        self.arm.set_speed(movement)
+        desired_speed = self.movement()
+
+        # Limit the arm speed going down
+        '''
+        if desired_speed < self.speed:
+            # Reduce the speed gradually by 0.05
+            self.speed = max(desired_speed, desired_speed - 0.05)
+        else:
+            # If we want to move up, set the motor speed to the axis
+            self.speed = desired_speed
+        '''
+
+        # Set the motor speed
+        self.arm.set_speed(self.movement())
