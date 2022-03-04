@@ -75,7 +75,7 @@ class ArmConstants:
 class WinchConstants:
     WINCH_MOTOR_PORT = 6
 
-    MOTOR_INVERTED = False
+    MOTOR_INVERTED = True
 
     WINCH_DRIVE_TIME_SECONDS = 1
     WINCH_DRIVE_POWER = 0.3
