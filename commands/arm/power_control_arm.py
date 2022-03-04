@@ -36,23 +36,29 @@ class PowerControlArm(commands2.CommandBase):
         # TODO: Make all these numbers constants
         # Reduce the power when moving up, but not when driving the motor downwards
         # When moving up, some value is already being added by default
-        movement *= 0.75 if movement > 0 else 1
+        if movement > 0:
+            power = movement * 0.75
+        else:
+            power = movement
 
         # Start the timer when controls drop out
         if movement == 0 and self.last_movement > 0:
             self.timer.reset()
+            self.timer.start()
             self.movement_just_went_zero = True
 
+        time = self.timer.get()
+
         # Check if we are currently controlling the robot, or just were
-        if movement > 0 or (self.timer.get() < 1.75 and self.movement_just_went_zero and movement == 0):
+        if movement > 0 or (time < 1.75 and self.movement_just_went_zero and movement == 0):
             # Add holding power to the power being fed to the motor
-            movement += 0.25
+            power += 0.25
 
         # If the timer has been running for more than X amount of seconds,
         # stop power the motor to prevent burnout
-        if self.timer.get() > 1.75:
+        if time > 1.75:
             self.movement_just_went_zero = False
 
         self.last_movement = movement
 
-        self.arm.set_power(movement)
+        self.arm.set_power(power)
