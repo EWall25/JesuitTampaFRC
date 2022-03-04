@@ -44,7 +44,7 @@ class PowerControlArm(commands2.CommandBase):
             self.movement_just_went_zero = True
 
         # Check if we are currently controlling the robot, or just were
-        if movement > 0 or (self.timer.get() < 1.75 and self.movement_just_went_zero):
+        if movement > 0 or (self.timer.get() < 1.75 and self.movement_just_went_zero and movement == 0):
             # Add holding power to the power being fed to the motor
             movement += 0.25
 
