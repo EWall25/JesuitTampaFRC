@@ -23,9 +23,15 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
         # self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
+        self.limit_timer = wpilib.Timer()
+
         self._limits_enabled = True
 
     def periodic(self) -> None:
+        if self.limits_enabled() and self.upper_limit_pressed():
+            self.limit_timer.reset()
+            self.limit_timer.start()
+
         self._update_dashboard()
 
     def _update_dashboard(self):
@@ -35,7 +41,7 @@ class ArmSubsystem(commands2.SubsystemBase):
     def set_power(self, goal: float) -> None:
         # If the limits are enabled then prevent us from exceeding the power needed to go past the limit
         # TODO: Find this power
-        power = min(0.8, goal) if self.limits_enabled() else goal
+        power = min(0.8, goal) if self.limit_timer.get() < 1 else goal
 
         # Drive the arm motors
         self.arm_motors.set(power)
