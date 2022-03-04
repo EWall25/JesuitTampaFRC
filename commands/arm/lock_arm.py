@@ -17,13 +17,13 @@ class LockArm(commands2.CommandBase):
         self.addRequirements([arm])
 
     def initialize(self) -> None:
-        self.power = self.arm.get_speed()
+        self.power = self.arm.get_power()
 
         # Update the dashboard
         wpilib.SmartDashboard.putBoolean("Arm Locked?", True)
 
     def execute(self) -> None:
-        self.arm.set_speed(self.power)
+        self.arm.set_power(self.power)
 
     def end(self, interrupted: bool) -> None:
         # Update the dashboard
