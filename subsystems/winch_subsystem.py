@@ -21,7 +21,7 @@ class WinchSubsystem(commands2.SubsystemBase):
     def _update_dashboard(self):
         wpilib.SmartDashboard.putBoolean("Winch Operable?", self.is_enabled())
 
-    def drive(self, power: float = WinchConstants.WINCH_DRIVE_POWER) -> None:
+    def drive(self, power: float) -> None:
         """
         Pull/release the winch chord.
         :param power: The power to drive the motor at

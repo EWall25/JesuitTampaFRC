@@ -19,5 +19,5 @@ class DefaultWinch(commands2.CommandBase):
         self.addRequirements([winch])
 
     def execute(self) -> None:
-        power = max(self.power(), 0)
+        power = self.power()
         self.winch.drive(power)

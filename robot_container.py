@@ -92,7 +92,7 @@ class RobotContainer:
         self.winch.setDefaultCommand(
             DefaultWinch(
                 self.winch,
-                lambda: -self.arm_stick.getRightY()
+                lambda: -self.arm_stick.getRightY() * 0.75
             )
         )
 
