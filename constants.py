@@ -10,9 +10,9 @@ class DriveConstants:
     LEFT_MOTORS_INVERTED = True
     RIGHT_MOTORS_INVERTED = False
 
-    TELEOP_DEFAULT_DRIVE_SPEED = 0.5
-    TELEOP_BOOST_DRIVE_SPEED = 1
-    TELEOP_TURN_SPEED = 0.5
+    TELEOP_DEFAULT_DRIVE_SPEED = 1
+    TELEOP_BOOST_DRIVE_SPEED = 0.5
+    TELEOP_TURN_SPEED = -0.5
 
     # How many arbitrary units the robot will accelerate in a second
     # For example, a value of 2 will make the robot accelerate to full power in 0.5 seconds

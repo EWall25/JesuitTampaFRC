@@ -52,7 +52,7 @@ class PowerControlArm(commands2.CommandBase):
         # Check if we are currently controlling the robot, or just were
         if movement > 0 or (time < 1.75 and self.movement_just_went_zero and movement == 0):
             # Add holding power to the power being fed to the motor
-            power += 0.25
+            power += 0.15
 
         # If the timer has been running for more than X amount of seconds,
         # stop power the motor to prevent burnout
