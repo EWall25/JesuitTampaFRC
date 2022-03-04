@@ -3,15 +3,13 @@ import commands2.button
 import wpilib
 
 import util
-from commands.arm.height_control_arm import HeightControlArm
-from commands.arm.power_control_arm import PowerControlArm
 from commands.arm.lock_arm import LockArm
-from commands.arm.set_arm_height import SetArmSpeed
+from commands.arm.power_control_arm import PowerControlArm
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.winch.default_winch import DefaultWinch
 from commands.winch.engage_winch import EngageWinch
-from constants import DriveConstants, DriverStationConstants, AutoConstants, ArmConstants
+from constants import DriveConstants, DriverStationConstants, AutoConstants
 from subsystems.arm_subsystem import ArmSubsystem
 from subsystems.drive_subsystem import DriveSubsystem
 from subsystems.winch_subsystem import WinchSubsystem
@@ -73,7 +71,8 @@ class RobotContainer:
                     if self.driver_stick.getRawButton(DriverStationConstants.SPEED_TOGGLE_BUTTON)
                     else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
                 # Set the rotation speed to the right stick's X axis.
-                lambda: self.driver_stick.getRawAxis(DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED
+                lambda: self.driver_stick.getRawAxis(
+                    DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED
             )
         )
 
@@ -113,7 +112,7 @@ class RobotContainer:
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.ARM_MODE_BUTTON).toggleWhenPressed(
             commands2.ParallelCommandGroup(
                 commands2.InstantCommand(
-                    lambda: self.arm.set_safety(not self.arm.is_safety_enabled()),
+                    lambda: self.arm.set_limits(not self.arm.limits_enabled()),
                     [self.arm]
                 ),
                 commands2.InstantCommand(

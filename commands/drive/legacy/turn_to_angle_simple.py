@@ -1,6 +1,6 @@
 import commands2
-from constants import DriveConstants
 
+from constants import DriveConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
 
@@ -13,7 +13,7 @@ class TurnToAngleSimple(commands2.CommandBase):
         self.goal = target_angle
 
         self.addRequirements([drive])
-    
+
     def initialize(self) -> None:
         self.drive.reset_heading()
 
@@ -24,10 +24,10 @@ class TurnToAngleSimple(commands2.CommandBase):
             self.drive.arcade_drive(0, 0.3)
         else:
             self.drive.arcade_drive(0, -0.3)
-    
+
     def end(self, interrupted: bool) -> None:
         self.drive.stop()
-    
+
     def isFinished(self) -> bool:
         lower = self.goal - DriveConstants.TURN_TOLERANCE_DEGREES
         upper = self.goal + DriveConstants.TURN_TOLERANCE_DEGREES

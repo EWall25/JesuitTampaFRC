@@ -2,9 +2,7 @@ import typing
 
 import commands2
 import wpilib
-import wpimath.filter
 
-from constants import ArmConstants
 from subsystems.arm_subsystem import ArmSubsystem
 
 
@@ -33,7 +31,11 @@ class PowerControlArm(commands2.CommandBase):
         self.addRequirements([arm])
 
     def execute(self) -> None:
-        movement = self.movement() * 0.75
+        movement = self.movement()
+
+        # TODO: Make all these numbers constants
+        # Reduce the power when moving up, but not when driving the motor downwards
+        movement *= 0.75 if movement > 0 else 1
 
         # Start the timer when controls drop out
         if movement == 0 and self.last_movement > 0:

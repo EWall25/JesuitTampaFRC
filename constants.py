@@ -21,7 +21,7 @@ class DriveConstants:
     DRIVE_TOLERANCE_METRES = 0.12
     TURN_TOLERANCE_DEGREES = 3
 
-    LEFT_ENCODER_PORT = 1   # TODO: Find correct encoder ports
+    LEFT_ENCODER_PORT = 1  # TODO: Find correct encoder ports
     RIGHT_ENCODER_PORT = 2
     # LEFT_ENCODER_PORTS = (0, 1)
     # RIGHT_ENCODER_PORTS = (2, 3)
@@ -85,16 +85,16 @@ class DriverStationConstants:
     DRIVER_CONTROLLER_PORT = 0
     ARM_CONTROLLER_PORT = 1
 
-    DRIVE_STICK = 1             # Left Stick
-    TURN_STICK = 4              # Right Stick
-    SPEED_TOGGLE_BUTTON = 6     # Right Bumper
+    DRIVE_STICK = 1  # Left Stick
+    TURN_STICK = 4  # Right Stick
+    SPEED_TOGGLE_BUTTON = 6  # Right Bumper
 
-    ARM_AXIS = 1                # Left Stick
-    WINCH_BUTTON = 4            # Y Button
-    RAMP_BUTTON = 3             # X Button
-    LOWER_HUB_BUTTON = 1        # A Button
-    LOCK_ARM_BUTTON = 2         # B Button
-    ARM_MODE_BUTTON = 8         # Start Button
+    ARM_AXIS = 1  # Left Stick
+    WINCH_BUTTON = 4  # Y Button
+    RAMP_BUTTON = 3  # X Button
+    LOWER_HUB_BUTTON = 1  # A Button
+    LOCK_ARM_BUTTON = 2  # B Button
+    ARM_MODE_BUTTON = 8  # Start Button
 
 
 class AutoConstants:

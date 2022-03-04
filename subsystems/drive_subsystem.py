@@ -2,7 +2,6 @@ import commands2
 import wpilib
 import wpilib.drive
 import wpimath.kinematics
-import wpiutil
 from ctre import PigeonIMU, CANCoder, SensorTimeBase
 from wpimath.geometry import Pose2d, Rotation2d
 

@@ -4,8 +4,8 @@ from pyfrc.physics import tankmodel, motor_cfgs
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics.units import units
 
-from robot import StealthTigersRobot
 from constants import DriveConstants, ArmConstants
+from robot import StealthTigersRobot
 from util import Units
 
 

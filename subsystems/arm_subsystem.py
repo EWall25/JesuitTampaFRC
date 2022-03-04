@@ -1,7 +1,6 @@
 import commands2
 import wpilib
 
-import util
 from constants import ArmConstants
 
 
@@ -24,6 +23,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         # Lower arm limit switch. Trips when the arm has reached the minimum height mechanically possible.
         # self.lower_limit = wpilib.DigitalInput(ArmConstants.LOWER_LIMIT_SWITCH_PORT)
 
+        self._limits_enabled = True
+
     def periodic(self) -> None:
         self._update_dashboard()
 
@@ -31,21 +32,12 @@ class ArmSubsystem(commands2.SubsystemBase):
         wpilib.SmartDashboard.putNumber("Arm Speed", self.get_power())
         wpilib.SmartDashboard.putBoolean("Upper Limit Tripped?", self.upper_limit_pressed())
 
-    def _safe_to_drive(self, power: float) -> bool:
-        if self.safety_enabled:
-            if self.upper_limit_pressed() and power > 0:
-                return False
-        return True
+    def set_power(self, goal: float) -> None:
+        # If the limits are enabled then prevent us from exceeding the power needed to go past the limit
+        # TODO: Find this power
+        power = min(0.8, goal) if self.limits_enabled() else goal
 
-    '''
-    # def initSendable(self, builder: wpiutil._wpiutil.SendableBuilder) -> None:
-        builder.setSmartDashboardType("Arm")
-        builder.addBooleanProperty("Safety Enabled", self.get_safety, self.set_safety)
-        builder.addBooleanProperty("Upper Limit", self.at_upper_limit, lambda *args: None)
-        builder.addBooleanProperty("Lower Limit", self.at_lower_limit, lambda *args: None)
-    '''
-
-    def set_power(self, power: float) -> None:
+        # Drive the arm motors
         self.arm_motors.set(power)
 
     def get_power(self) -> float:
@@ -53,3 +45,9 @@ class ArmSubsystem(commands2.SubsystemBase):
 
     def upper_limit_pressed(self) -> bool:
         return self.upper_limit.get()
+
+    def set_limits(self, enabled: bool) -> None:
+        self._limits_enabled = enabled
+
+    def limits_enabled(self) -> bool:
+        return self._limits_enabled

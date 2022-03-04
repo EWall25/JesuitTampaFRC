@@ -1,6 +1,6 @@
 import commands2
-from constants import DriveConstants
 
+from constants import DriveConstants
 from subsystems.drive_subsystem import DriveSubsystem
 
 
