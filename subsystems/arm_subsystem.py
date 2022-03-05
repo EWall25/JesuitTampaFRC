@@ -28,9 +28,14 @@ class ArmSubsystem(commands2.SubsystemBase):
         self._limits_enabled = True
 
     def periodic(self) -> None:
+        """
+        """
+
+        '''
         if self.limits_enabled() and self.upper_limit_pressed():
             self.limit_timer.reset()
             self.limit_timer.start()
+        '''
 
         self._update_dashboard()
 
@@ -39,9 +44,8 @@ class ArmSubsystem(commands2.SubsystemBase):
         wpilib.SmartDashboard.putBoolean("Upper Limit Tripped?", self.upper_limit_pressed())
 
     def set_power(self, goal: float) -> None:
-        # If the limits are enabled then prevent us from exceeding the power needed to go past the limit
         # TODO: Find this power
-        power = min(0.8, goal) if self.limit_timer.get() < 1 else goal
+        power = goal
 
         # Drive the arm motors
         self.arm_motors.set(power)
@@ -50,10 +54,13 @@ class ArmSubsystem(commands2.SubsystemBase):
         return self.arm_motors.get()
 
     def upper_limit_pressed(self) -> bool:
-        return self.upper_limit.get()
+        return False
+        # return self.upper_limit.get()
 
     def set_limits(self, enabled: bool) -> None:
-        self._limits_enabled = enabled
+        return
+        # self._limits_enabled = enabled
 
     def limits_enabled(self) -> bool:
-        return self._limits_enabled
+        return False
+        # return self._limits_enabled

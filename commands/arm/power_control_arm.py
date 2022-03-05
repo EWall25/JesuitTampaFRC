@@ -1,3 +1,4 @@
+import logging
 import typing
 
 import commands2
@@ -37,7 +38,7 @@ class PowerControlArm(commands2.CommandBase):
         # Reduce the power when moving up, but not when driving the motor downwards
         # When moving up, some value is already being added by default
         if movement > 0:
-            power = movement * 0.75
+            power = movement * 0.7
         else:
             power = movement
 
@@ -52,7 +53,7 @@ class PowerControlArm(commands2.CommandBase):
         # Check if we are currently controlling the robot, or just were
         if movement > 0 or (time < 1.75 and self.movement_just_went_zero and movement == 0):
             # Add holding power to the power being fed to the motor
-            power += 0.15
+            power += 0.2
 
         # If the timer has been running for more than X amount of seconds,
         # stop power the motor to prevent burnout

@@ -1,3 +1,5 @@
+import logging
+
 import commands2
 import commands2.button
 import wpilib
@@ -5,6 +7,7 @@ import wpilib
 import util
 from commands.arm.lock_arm import LockArm
 from commands.arm.power_control_arm import PowerControlArm
+from commands.arm.set_arm_power import SetArmPower
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.winch.default_winch import DefaultWinch
@@ -37,6 +40,9 @@ class RobotContainer:
         # the hangar
         self.winch.set_enabled(False)
 
+        # Where we're going, we don't need limits
+        self.arm.set_limits(False)
+
         # Add subsystems to the dashboard
         # wpilib.SmartDashboard.putData(self.drive)
         # wpilib.SmartDashboard.putData(self.arm)
@@ -49,12 +55,14 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
+        self.test_auto = SetArmPower(self.arm, 0.38, 1)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
         self.chooser.setDefaultOption("Competition", self.competition_auto)
+        self.chooser.addOption("Test", self.test_auto)
 
         # Put the chooser on the dashboard
         wpilib.SmartDashboard.putData("Autonomous", self.chooser)
@@ -101,9 +109,11 @@ class RobotContainer:
         """
 
         # Engage the winch when the top button is pressed
+        '''
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.WINCH_BUTTON).whenPressed(
             EngageWinch(self.winch)
         )
+        '''
         # Lock the arm in place
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.LOCK_ARM_BUTTON).toggleWhenPressed(
             LockArm(self.arm)
@@ -111,10 +121,10 @@ class RobotContainer:
         # Switch between "modes" for normal match play and climbing
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.ARM_MODE_BUTTON).toggleWhenPressed(
             commands2.ParallelCommandGroup(
-                commands2.InstantCommand(
-                    lambda: self.arm.set_limits(not self.arm.limits_enabled()),
-                    [self.arm]
-                ),
+                #commands2.InstantCommand(
+                #    lambda: self.arm.set_limits(not self.arm.limits_enabled()),
+                #    [self.arm]
+                #)
                 commands2.InstantCommand(
                     lambda: self.winch.set_enabled(not self.winch.is_enabled()),
                     [self.winch]
