@@ -55,7 +55,7 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
-        self.test_auto = SetArmPower(self.arm, 0.38, 1)
+        self.test_auto = SetArmPower(self.arm, 0.5, 2)
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
