@@ -5,7 +5,7 @@ from subsystems.arm_subsystem import ArmSubsystem
 
 
 class SetArmPower(commands2.CommandBase):
-    RAMP_TIME = 1
+    RAMP_TIME = 0.5
 
     def __init__(self, arm: ArmSubsystem, power: float, hold_seconds: float):
         # TODO: FIX ALL THIS
@@ -19,6 +19,8 @@ class SetArmPower(commands2.CommandBase):
         """
 
         super().__init__()
+
+        self.addRequirements([arm])
 
         self.arm = arm
         self.goal = power
@@ -71,7 +73,7 @@ class SetArmPower(commands2.CommandBase):
 
         if time < self.RAMP_TIME:
             # Overcome friction on the motor
-            power = 0.7
+            power = 0.55
 
         if self.RAMP_TIME < time < self.hold_time + self.RAMP_TIME:
             power = self.goal

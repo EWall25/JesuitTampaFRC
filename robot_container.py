@@ -40,13 +40,6 @@ class RobotContainer:
         # the hangar
         self.winch.set_enabled(False)
 
-        # Where we're going, we don't need limits
-        self.arm.set_limits(False)
-
-        # Add subsystems to the dashboard
-        # wpilib.SmartDashboard.putData(self.drive)
-        # wpilib.SmartDashboard.putData(self.arm)
-
         # Autonomous routines
 
         # Competition autonomous routine
@@ -55,6 +48,7 @@ class RobotContainer:
             DriveDistanceSimple(self.drive, Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
+
         self.test_auto = SetArmPower(self.arm, 0.5, 2)
 
         # Auto routine chooser
@@ -68,6 +62,9 @@ class RobotContainer:
         wpilib.SmartDashboard.putData("Autonomous", self.chooser)
 
         self.configure_button_bindings()
+
+        # Setup camera streaming
+        wpilib.CameraServer.launch()
 
         # Setup default drive mode
         self.drive.setDefaultCommand(
