@@ -33,9 +33,8 @@ def main():
             # skip the rest of the current iteration
             continue
 
-        #
-        # Insert your image processing logic here!
-        #
+        # Flip the camera stream
+        cv2.flip(img, 1)
 
         # (optional) send some image back to the dashboard
         output_stream.putFrame(img)
