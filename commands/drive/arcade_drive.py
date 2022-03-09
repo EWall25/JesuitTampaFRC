@@ -30,7 +30,18 @@ class ArcadeDrive(commands2.CommandBase):
         # A SlewRateLimiter limits our acceleration in order to make the robot move smoother
         self.filter = wpimath.filter.SlewRateLimiter(DriveConstants.TELEOP_DRIVE_ACCELERATION_PER_SECOND)
 
+        self.last_forward = 0
+
         self.addRequirements([drive])
 
     def execute(self) -> None:
-        self.drive.arcade_drive(self.filter.calculate(self.forward()), self.rotation())
+        forward = self.forward()
+        rotation = self.rotation()
+
+        # Make changing directions quicker
+        if (forward < 0) != (self.last_forward < 0):
+            self.filter.reset(forward)
+
+        self.drive.arcade_drive(self.filter.calculate(forward), rotation)
+
+        self.last_forward = forward
