@@ -86,7 +86,13 @@ class RobotContainer:
                     else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED),
                 # Set the rotation speed to the right stick's X axis.
                 lambda: self.driver_stick.getRawAxis(
-                    DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED
+                    DriverStationConstants.TURN_STICK) * DriveConstants.TELEOP_TURN_SPEED,
+                # Adds to the forward stick
+                lambda: self.driver_stick.getRawAxis(DriverStationConstants.COMPLIMENT_STICK * (
+                    DriveConstants.TELEOP_BOOST_DRIVE_SPEED
+                    if self.driver_stick.getRawButton(DriverStationConstants.SPEED_TOGGLE_BUTTON)
+                    else DriveConstants.TELEOP_DEFAULT_DRIVE_SPEED)
+                )
             )
         )
 
@@ -127,10 +133,10 @@ class RobotContainer:
         # Switch between "modes" for normal match play and climbing
         commands2.button.JoystickButton(self.arm_stick, DriverStationConstants.ARM_MODE_BUTTON).toggleWhenPressed(
             commands2.ParallelCommandGroup(
-                #commands2.InstantCommand(
+                # commands2.InstantCommand(
                 #    lambda: self.arm.set_limits(not self.arm.limits_enabled()),
                 #    [self.arm]
-                #)
+                # )
                 commands2.InstantCommand(
                     lambda: self.winch.set_enabled(not self.winch.is_enabled()),
                     [self.winch]
