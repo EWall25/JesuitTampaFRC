@@ -1,22 +1,21 @@
-import logging
+import os
 
 import commands2
 import commands2.button
 import wpilib
 
-import util
+from commands.replay_command import ReplayCommand
+from utils import util
 from commands.arm.lock_arm import LockArm
 from commands.arm.power_control_arm import PowerControlArm
-from commands.arm.set_arm_power import SetArmPower
 from commands.drive.arcade_drive import ArcadeDrive
 from commands.drive.drive_distance_simple import DriveDistanceSimple
 from commands.winch.default_winch import DefaultWinch
-from commands.winch.engage_winch import EngageWinch
 from constants import DriveConstants, DriverStationConstants, AutoConstants
 from subsystems.arm_subsystem import ArmSubsystem
 from subsystems.drive_subsystem import DriveSubsystem
 from subsystems.winch_subsystem import WinchSubsystem
-from util import Units
+from utils.util import Units
 
 
 class RobotContainer:
@@ -40,6 +39,12 @@ class RobotContainer:
         # the hangar
         self.winch.set_enabled(False)
 
+        # Load the correct autonomous instruction file
+        if wpilib.RobotBase.isReal():
+            arm_auto_path = "/u/resources/auto.txt"
+        else:
+            arm_auto_path = os.environ.get("ARM_AUTO_PATH")
+
         # Autonomous routines
 
         # Competition autonomous routine
@@ -49,7 +54,11 @@ class RobotContainer:
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
 
-        self.test_auto = SetArmPower(self.arm, 0.5, 2)
+        self.test_auto = ReplayCommand(
+            arm_auto_path,
+            lambda x: self.arm.set_power(float(x)),
+            [self.arm]
+        )
 
         # Auto routine chooser
         self.chooser = wpilib.SendableChooser()
@@ -96,7 +105,7 @@ class RobotContainer:
         self.winch.setDefaultCommand(
             DefaultWinch(
                 self.winch,
-                lambda: -self.arm_stick.getRightY()
+                lambda: -self.arm_stick.getRawAxis(DriverStationConstants.WINCH_AXIS)
             )
         )
 

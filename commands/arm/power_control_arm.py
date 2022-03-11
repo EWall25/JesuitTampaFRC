@@ -1,10 +1,10 @@
-import logging
 import typing
 
 import commands2
 import wpilib
 
 from subsystems.arm_subsystem import ArmSubsystem
+from utils.logging import Logger
 
 
 class PowerControlArm(commands2.CommandBase):
@@ -27,9 +27,14 @@ class PowerControlArm(commands2.CommandBase):
 
         self.last_movement = 0
         self.movement_just_went_zero = False
+
         self.timer = wpilib.Timer()
+        self.logger = Logger("arm-")
 
         self.addRequirements([arm])
+
+    def initialize(self) -> None:
+        self.logger.clear()
 
     def execute(self) -> None:
         movement = self.movement()
@@ -62,4 +67,11 @@ class PowerControlArm(commands2.CommandBase):
 
         self.last_movement = movement
 
+        if power != 0:
+            # Log the arm power to a file for development purposes
+            self.logger.log(str(power))
+
         self.arm.set_power(power)
+
+    def end(self, interrupted: bool) -> None:
+        self.logger.flush()

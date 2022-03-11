@@ -18,7 +18,7 @@ def main():
     cv_sink = cs.getVideo()
 
     # (optional) Setup a CvSource. This will send images back to the Dashboard
-    output_stream = cs.putVideo("Name", 320, 240)
+    output_stream = cs.putVideo("Front Camera", 320, 240)
 
     # Allocating new images is very expensive, always try to preallocate
     img = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
@@ -32,9 +32,6 @@ def main():
             output_stream.notifyError(cv_sink.getError())
             # skip the rest of the current iteration
             continue
-
-        # Flip the camera stream
-        cv2.flip(img, 1)
 
         # (optional) send some image back to the dashboard
         output_stream.putFrame(img)

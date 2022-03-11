@@ -39,7 +39,7 @@ class ArcadeDrive(commands2.CommandBase):
         rotation = self.rotation()
 
         # Make changing directions quicker
-        if (forward < 0) != (self.last_forward < 0):
+        if (forward <= 0) != (self.last_forward <= 0):
             self.filter.reset(forward)
 
         self.drive.arcade_drive(self.filter.calculate(forward), rotation)
