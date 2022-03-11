@@ -7,22 +7,28 @@ import wpilib
 class ReplayCommand(commands2.CommandBase):
     index = 0
 
-    def __init__(self, file_path: str, callback: typing.Callable[[str], None], requirements: typing.List[commands2.Subsystem]):
+    def __init__(self, file_path: str, callback: typing.Callable[[float], None], requirements: typing.List[commands2.Subsystem]):
         super().__init__()
 
         self.callback = callback
+        self.instructions: typing.List[float] = []
 
         try:
             with open(file_path, "r") as file:
-                content = file.read()
-                self.instructions = content.splitlines(False)
+                content = file.read().splitlines()
+                for line in content:
+                    try:
+                        self.instructions.append(float(line))
+                    except ValueError:
+                        pass
         except FileNotFoundError:
             if not wpilib.DriverStation.isFMSAttached():
                 print("Action replay file not found!")
 
-            self.instructions = []
-
         self.addRequirements(requirements)
+
+    def initialize(self) -> None:
+        self.index = 0
 
     def execute(self) -> None:
         try:

@@ -183,7 +183,9 @@ class DriveSubsystem(commands2.SubsystemBase):
 
         # Add together the left encoder and right encoder's position then average them by dividing by 2
         # return (self.l_encoder.getPosition() + self.r_encoder.getPosition()) / 2
-        return (self.get_left_distance() + self.get_right_distance()) / 2
+        # return (self.get_left_distance() + self.get_right_distance()) / 2
+        # TODO: Fix right encoder
+        return self.get_left_distance()
 
     def get_wheel_speeds(self) -> wpimath.kinematics.DifferentialDriveWheelSpeeds:
         """

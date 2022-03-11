@@ -4,6 +4,8 @@ import commands2
 import commands2.button
 import wpilib
 
+from commands.arm.lower_arm import LowerArm
+from commands.drive.drive import Drive
 from commands.replay_command import ReplayCommand
 from utils import util
 from commands.arm.lock_arm import LockArm
@@ -39,12 +41,6 @@ class RobotContainer:
         # the hangar
         self.winch.set_enabled(False)
 
-        # Load the correct autonomous instruction file
-        if wpilib.RobotBase.isReal():
-            arm_auto_path = "/u/resources/auto.txt"
-        else:
-            arm_auto_path = os.environ.get("ARM_AUTO_PATH")
-
         # Autonomous routines
 
         # Competition autonomous routine
@@ -54,9 +50,32 @@ class RobotContainer:
                                 AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED)
         )
 
+        self.new_competition_auto = commands2.SequentialCommandGroup(
+            # Raise the arm to the lower hub
+            ReplayCommand(
+                "/home/lvuser/py/resources/raise_arm.txt",
+                self.arm.set_power,
+                [self.arm]
+            ),
+            commands2.ParallelCommandGroup(
+                # Hold the arm at the hub
+                LockArm(self.arm),
+                # Ram the robot into the hub
+                Drive(self.drive, 1, 0)
+            ).withTimeout(0.5),
+            # Slowly lower the arm
+            LowerArm(self.arm),
+            # Drive out of the tarmack
+            DriveDistanceSimple(
+                self.drive,
+                Units.feet_to_metres(AutoConstants.DRIVE_AWAY_FROM_HUB_DISTANCE_FEET),
+                AutoConstants.DRIVE_AWAY_FROM_HUB_SPEED
+            ).withTimeout(4)
+        )
+
         self.test_auto = ReplayCommand(
-            arm_auto_path,
-            lambda x: self.arm.set_power(float(x)),
+            "/u/resources/test_auto.txt",
+            self.arm.set_power,
             [self.arm]
         )
 
@@ -64,7 +83,8 @@ class RobotContainer:
         self.chooser = wpilib.SendableChooser()
 
         # Add commands to the auto command chooser
-        self.chooser.setDefaultOption("Competition", self.competition_auto)
+        self.chooser.setDefaultOption("New Competition", self.new_competition_auto)
+        self.chooser.addOption("Competition", self.competition_auto)
         self.chooser.addOption("Test", self.test_auto)
 
         # Put the chooser on the dashboard
@@ -74,6 +94,7 @@ class RobotContainer:
 
         # Setup camera streaming
         wpilib.CameraServer.launch()
+        # wpilib.CameraServer.launch("camera/vision.py:main")
 
         # Setup default drive mode
         self.drive.setDefaultCommand(
